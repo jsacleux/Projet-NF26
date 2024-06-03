@@ -1,19 +1,8 @@
 .LOGON localhost/dbc,dbc;
 
--- Verification si la base de donnees existe
-SELECT * FROM DBC.Databases WHERE DatabaseName = 'STG';
-
--- Si la base n'existe pas, la creer
-.IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_DATABASE;
-
--- Creation BDD STG
-CREATE DATABASE STG AS PERMANENT = 60e6,
-SPOOL = 120e6;
-
-.LABEL LABEL_SKIP_CREATE_DATABASE
+-- Les tables STG sont recréées à chaque exécution
 
 --Table CHAMBRE
-
 -- Verification si table Chambre existe
 SELECT * FROM dbc.tables where tablename='CHAMBRE';
 
@@ -35,7 +24,6 @@ CREATE SET TABLE STG.CHAMBRE (
 );
 
 --Table TRAITEMENT
-
 -- Verification si table Traitement existe
 SELECT * FROM dbc.tables where tablename='TRAITEMENT';
 
@@ -58,7 +46,6 @@ CREATE SET TABLE STG.TRAITEMENT (
 );
 
 --Table PERSONNEL
-
 -- Verification si table PERSONNEL existe
 SELECT * FROM dbc.tables where tablename='PERSONNEL';
 
@@ -83,7 +70,6 @@ CREATE SET TABLE STG.PERSONNEL (
 );
 
 --Table PATIENT
-
 -- Verification si table PATIENT existe
 SELECT * FROM dbc.tables where tablename='PATIENT';
 
@@ -108,7 +94,6 @@ CREATE SET TABLE STG.PATIENT (
 );
 
 --Table CONSULTATION
-
 -- Verification si table CONSULTATION existe
 SELECT * FROM dbc.tables where tablename='CONSULTATION';
 
@@ -136,7 +121,6 @@ CREATE SET TABLE STG.CONSULTATION (
 );
 
 --Table HOSPITALISATION
-
 -- Verification si table HOSPITALISATION existe
 SELECT * FROM dbc.tables where tablename='HOSPITALISATION';
 
@@ -158,7 +142,6 @@ CREATE SET TABLE STG.HOSPITALISATION (
 );
 
 --Table MEDICAMENT
-
 -- Verification si table MEDICAMENT existe
 SELECT * FROM dbc.tables where tablename='MEDICAMENT';
 

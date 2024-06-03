@@ -16,6 +16,7 @@ PI ??
 - Une table `O_HOSP` qui liste des informations sur les hospitalisations : PK l'id de l'hospitalisation, PI l'id de consultation
 - Une table `R_MEDC` qui liste des informations sur les médicaments : PK, PI : Surrogate Key formée à partir de (CD_MEDICAMENT, CATG_MEDICAMENT, MARQUE_FABRI)
 
+# Description des tables TCH 
 tables TCH à intégrer dans le modèle physique ?? je pense que oui pusiqu'il y a l'identifiant de l'exécution pour chaque table :
 
 - Une table `T_SUIVI_TRMT`: table de suivi des traitements des requêtes effectuées sur les tables, PK, PI : id_execution (compteur incrémental des scripts)

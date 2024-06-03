@@ -1,59 +1,43 @@
 .LOGON localhost/dbc,dbc;
 
--- Verification si la base de donnees existe
-SELECT * FROM DBC.Databases WHERE DatabaseName = 'TCH';
+-- Les tables de TCH ne sont pas recréées si elles existent déjà
 
--- Si la base n'existe pas, la creer
-.IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_DATABASE;
+-- Vérification si la table T_SUIVI_RUN existe dans la base TCH
+SELECT * FROM dbc.tables WHERE tablename='T_SUIVI_RUN' AND databasename='TCH';
 
--- Creation BDD STG
-CREATE DATABASE TCH AS PERMANENT = 60e6,
-SPOOL = 120e6;
+-- Si la table existe, passer à la prochaine table
+.IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_T_SUIVI_RUN;
 
-.LABEL LABEL_SKIP_CREATE_DATABASE
-
--- Table T_SUIVI_RUN
--- Verification si table T_SUIVI_RUN existe
-SELECT * FROM dbc.tables where tablename='T_SUIVI_RUN';
-
--- Suppression de la table T_SUIVI_RUN si elle existe
-.IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_T_SUIVI_RUN;
-DROP TABLE TCH.T_SUIVI_RUN;
-
--- Creation de la table T_SUIVI_RUN
-.LABEL LABEL_SKIP_DELETE_T_SUIVI_RUN
-
-CREATE SET  TABLE TCH.T_SUIVI_RUN (
+-- Création de la table T_SUIVI_RUN
+CREATE SET TABLE TCH.T_SUIVI_RUN (
     RUN_ID INTEGER NOT NULL,
     RUN_STRT_DTTM TIMESTAMP(0) NOT NULL,
     RUN_ED_DTTM TIMESTAMP(0),
     RUN_STTS_CD VARCHAR(10) NOT NULL
-  ) UNIQUE PRIMARY INDEX (RUN_ID);
-  
---Table T_SUIVI_TRMT
+) UNIQUE PRIMARY INDEX (RUN_ID);
 
--- Verification si table T_SUIVI_TRMT existe
-SELECT * FROM dbc.tables where tablename='T_SUIVI_TRMT';
+.LABEL LABEL_SKIP_CREATE_T_SUIVI_RUN
 
--- Suppression de la table T_SUIVI_TRMT si elle existe
-.IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_T_SUIVI_TRMT;
-DROP TABLE TCH.T_SUIVI_TRMT;
+-- Vérification si la table T_SUIVI_TRMT existe dans la base TCH
+SELECT * FROM dbc.tables WHERE tablename='T_SUIVI_TRMT' AND databasename='TCH';
 
--- Creation de la table T_SUIVI_TRMT
-.LABEL LABEL_SKIP_DELETE_T_SUIVI_TRMT
-  CREATE SET TABLE TCH.T_SUIVI_TRMT (
-  	RUN_ID INTEGER NOT NULL,
+-- Si la table existe, passer à la fin
+.IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_T_SUIVI_TRMT;
+
+-- Création de la table T_SUIVI_TRMT
+CREATE SET TABLE TCH.T_SUIVI_TRMT (
+    RUN_ID INTEGER NOT NULL,
     SCRPT_NAME VARCHAR(250) NOT NULL,
     EXEC_STRT_DTTM TIMESTAMP(0) NOT NULL,
     EXEC_END_DTTM TIMESTAMP(0), 
     EXEC_STTS_CD VARCHAR(10) NOT NULL, 
     EXEC_ID INTEGER NOT NULL 
-  ) UNIQUE PRIMARY INDEX (EXEC_ID);
-  
+) UNIQUE PRIMARY INDEX (EXEC_ID);
+
+.LABEL LABEL_SKIP_CREATE_T_SUIVI_TRMT
+
 -- Fermeture
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
 .LOGOFF;
 .EXIT;
-
-  
