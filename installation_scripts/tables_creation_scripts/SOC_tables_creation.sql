@@ -2,7 +2,7 @@
 
 -- Les tables de SOC ne sont pas recréées si elles existent déjà
 
--- Vérification si la table T_SUIVI_RUN existe dans la base SOC
+-- Vérification si la table R_ROOM existe dans la base SOC
 SELECT * FROM dbc.tables WHERE tablename='R_ROOM' AND databasename='SOC';
 
 -- Si la table existe, passer à la prochaine table
@@ -63,12 +63,12 @@ SELECT * FROM dbc.tables WHERE tablename='O_STFF' AND databasename='SOC';
 .IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_O_STFF;
 
 -- Création de la table O_STFF
-CREATE SET TABLE O_STFF(
+CREATE SET TABLE SOC.O_STFF(
     PART_ID 	    INTEGER NOT NULL PRIMARY KEY,
     WORK_STRT_DTTM	TIMESTAMP(0) NOT NULL,
     WORK_END_DTTM	TIMESTAMP(0),
     WORK_END_RESN	VARCHAR(100),
-    EXEC_ID	        INTEGER NOT NULL,
+    EXEC_ID	        INTEGER NOT NULL
 ) UNIQUE PRIMARY INDEX(PART_ID);
 
 .LABEL LABEL_SKIP_CREATE_R_PART
