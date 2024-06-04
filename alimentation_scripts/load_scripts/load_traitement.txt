@@ -1,0 +1,75 @@
+DEFINE JOB file_load
+DESCRIPTION 'Load a Teradata table from a file'
+(
+  /*
+    Define the schema of the data in the csv file
+  */
+  DEFINE SCHEMA SCHEMA_IRS
+    (
+      in_id_traitement VARCHAR(20),
+      in_cd_medicament VARCHAR(20),
+      in_catg_medicament VARCHAR(20),
+      in_marque_fabri VARCHAR(20),
+      in_qte_medicament VARCHAR(20),
+      in_dsc_posologie VARCHAR(20),
+      in_consult VARCHAR(20),
+      in_ts_creation_traitement VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MM:SS') FORMATOUT ('YYYY-MM-DD HH:MM:SS')
+    );
+
+  /*
+     In the first step, we are sending statements to remove old tables
+     and create a new one.
+     This step replies on configuration stored in `od_IRS` operator
+  */
+  STEP st_Setup_Tables
+  (
+    APPLY
+      ('DROP TABLE ' || @LoadTargetTable || ';'),
+      ('CREATE TABLE ' || @LoadTargetTable || ' (
+
+        ID_TRAINTEMENT INTEGER NOT NULL PRIMARY KEY,
+        CD_MEDICAMENT INTEGER NOT NULL,
+        CATG_MEDICAMENT VARCHAR(100) NOT NULL,
+        MARQUE_FABRI VARCHAR(100) NOT NULL,
+        QTE_MEDICAMENT SMALLINT,
+        DSC_POSOLOGIE VARCHAR(100) NOT NULL,
+        ID_CONSULT INTEGER NOT NULL,
+        TS_CREATION_TRAITEMENT TIMESTAMP(0) NOT NULL
+        );')
+
+    TO OPERATOR ($DDL);
+  );
+
+  /*
+    Finally, in this step we read the data from the file operator
+    and send it to the load operator.
+  */
+  STEP st_Load_File
+  (
+    APPLY
+      ('INSERT INTO ' || @LoadTargetTable || ' (
+            ID_TRAINTEMENT,
+            CD_MEDICAMENT,
+            CATG_MEDICAMENT,
+            MARQUE_FABRI,
+            QTE_MEDICAMENT,
+            DSC_POSOLOGIE,
+            ID_CONSULT,
+            TS_CREATION_TRAITEMENT,
+            return_type,
+            dln,
+            object_id
+      ) VALUES (
+            :in_id_traitement,
+            :in_cd_medicament,
+            :in_catg_medicament,
+            :in_marque_fabri,
+            :in_qte_medicament,
+            :in_dsc_posologie,
+            :in_consult,
+            :in_ts_creation_traitement
+      );')
+    TO OPERATOR ($LOAD)
+    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+  );
+);
