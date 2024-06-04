@@ -25,22 +25,22 @@ DATE="dates"
 
 SCRIPT_JOBVARS=(
     "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_consultation.txt"
+    "$DOSSIER_JOBVARS/jobvars_hospitalisation.txt"
+    "$DOSSIER_JOBVARS/jobvars_medicament.txt"
+    "$DOSSIER_JOBVARS/jobvars_patient.txt"
+    "$DOSSIER_JOBVARS/jobvars_personnel.txt"
+    "$DOSSIER_JOBVARS/jobvars_traitement.txt"
 )
 
 SCRIPT_LOAD=(
     "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_consultation.txt"
+    "$DOSSIER_LOAD/load_hospitalisation.txt"
+    "$DOSSIER_LOAD/load_medicament.txt"
+    "$DOSSIER_LOAD/load_patient.txt"
+    "$DOSSIER_LOAD/load_personnel.txt"
+    "$DOSSIER_LOAD/load_traitement.txt"
 )
 
 # Initialisation du fichier de log
