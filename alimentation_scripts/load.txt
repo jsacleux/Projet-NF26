@@ -1,0 +1,70 @@
+DEFINE JOB file_load
+DESCRIPTION 'Load a Teradata table from a file'
+(
+  /*
+    Define the schema of the data in the csv file
+  */
+  DEFINE SCHEMA SCHEMA_IRS
+    (
+      in_no_chambre INTEGER,
+      in_nom_chambre VARCHAR(20),
+      in_no_etage BYTEINT,
+      in_nom_batiment VARCHAR(20),
+      in_type_chambre VARCHAR(20),
+      in_prix_jour SMALLINT,
+      in_dt_creation ANSIDATE
+    );
+
+  /*
+     In the first step, we are sending statements to remove old tables
+     and create a new one.
+     This step replies on configuration stored in `od_IRS` operator
+  */
+  STEP st_Setup_Tables
+  (
+    APPLY
+      ('DROP TABLE ' || @LoadTargetTable || ';'),
+      ('CREATE TABLE ' || @LoadTargetTable || ' (
+
+          NO_CHAMBRE INTEGER,
+          NOM_CHAMBRE VARCHAR(20),
+          NO_ETAGE BYTEINT,
+          NOM_BATIMENT VARCHAR(20),
+          TYPE_CHAMBRE VARCHAR(20),
+          PRIX_JOUR SMALLINT,
+          DT_CREATION DATE
+        );')
+
+    TO OPERATOR ($DDL);
+  );
+
+  /*
+    Finally, in this step we read the data from the file operator
+    and send it to the load operator.
+  */
+  STEP st_Load_File
+  (
+    APPLY
+      ('INSERT INTO ' || @LoadTargetTable || ' (
+          NO_CHAMBRE,
+          NOM_CHAMBRE,
+          NO_ETAGE,
+          NOM_BATIMENT,
+          TYPE_CHAMBRE,
+          PRIX_JOUR,
+          return_type,
+          dln,
+          object_id
+      ) VALUES (
+          :in_no_chambre,
+          :in_nom_chambre,
+          :in_no_etage,
+          :in_nom_batiment,
+          :in_type_chambre,
+          :in_prix_jour,
+          :in_dt_creation
+      );')
+    TO OPERATOR ($LOAD)
+    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+  );
+);
