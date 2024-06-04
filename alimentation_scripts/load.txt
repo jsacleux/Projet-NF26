@@ -6,13 +6,13 @@ DESCRIPTION 'Load a Teradata table from a file'
   */
   DEFINE SCHEMA SCHEMA_IRS
     (
-      in_no_chambre INTEGER,
+      in_no_chambre VARCHAR(20),
       in_nom_chambre VARCHAR(20),
-      in_no_etage BYTEINT,
+      in_no_etage VARCHAR(20),
       in_nom_batiment VARCHAR(20),
       in_type_chambre VARCHAR(20),
-      in_prix_jour SMALLINT,
-      in_dt_creation ANSIDATE
+      in_prix_jour VARCHAR(20),
+      in_dt_creation VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD')
     );
 
   /*
