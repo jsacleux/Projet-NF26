@@ -19,8 +19,8 @@ LOGFILE="LAUNCH_LOAD_SID.log"
 # TODO execution of TPT scripts TO READ ALL DATABASES FROM A GIVEN INPUT DAY
 
 # Dossiers contenant les scripts SQL
-DOSSIER_JOBVARS="bdd_creation_scripts"
-DOSSIER_LOAD="tables_creation_scripts"
+DOSSIER_JOBVARS="load_scripts"
+DOSSIER_LOAD="jobvars_scripts"
 DATE="dates"
 
 SCRIPT_JOBVARS=(
