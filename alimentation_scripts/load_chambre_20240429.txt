@@ -4,7 +4,7 @@ DESCRIPTION 'Load a Teradata table from a file'
   /*
     Define the schema of the data in the csv file
   */
-  DEFINE SCHEMA SCHEMA_IRS
+  DEFINE SCHEMA SCHEMA_INPUT_CHAMBRE
     (
       in_no_chambre VARCHAR(20),
       in_nom_chambre VARCHAR(20),
@@ -26,13 +26,13 @@ DESCRIPTION 'Load a Teradata table from a file'
       ('DROP TABLE ' || @LoadTargetTable || ';'),
       ('CREATE TABLE ' || @LoadTargetTable || ' (
 
-          NO_CHAMBRE INTEGER,
-          NOM_CHAMBRE VARCHAR(20),
+          NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
+          NOM_CHAMBRE VARCHAR(20) NOT NULL,
           NO_ETAGE BYTEINT,
           NOM_BATIMENT VARCHAR(20),
           TYPE_CHAMBRE VARCHAR(20),
-          PRIX_JOUR SMALLINT,
-          DT_CREATION DATE
+          PRIX_JOUR SMALLINT NOT NULL,
+          DT_CREATION DATE NOT NULL
         );')
 
     TO OPERATOR ($DDL);
@@ -52,9 +52,7 @@ DESCRIPTION 'Load a Teradata table from a file'
           NOM_BATIMENT,
           TYPE_CHAMBRE,
           PRIX_JOUR,
-          return_type,
-          dln,
-          object_id
+          DT_CREATION
       ) VALUES (
           :in_no_chambre,
           :in_nom_chambre,
@@ -65,6 +63,6 @@ DESCRIPTION 'Load a Teradata table from a file'
           :in_dt_creation
       );')
     TO OPERATOR ($LOAD)
-    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_INPUT_CHAMBRE));
   );
 );

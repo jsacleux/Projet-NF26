@@ -2,7 +2,7 @@ TargetTdpId           = '127.0.0.1'
 TargetUserName        = 'dbc'
 TargetUserPassword    = 'dbc'
 
-FileReaderDirectoryPath = '../Data_Hospital/Data_Hospital/BDD_HOSPITAL_20240429/'
+FileReaderDirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_20240429/'
 FileReaderFileName      = 'CHAMBRE_20240429.txt'
 FileReaderFormat        = 'Delimited'
 FileReaderOpenMode      = 'Read'
