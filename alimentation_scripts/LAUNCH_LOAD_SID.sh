@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Variables
+LOGFILE="LAUNCH_LOAD_SID.log"
+
 ### TODO ADD 
 ## In jobvars.txt :
 # LoadLogTable    = 'irs.irs_returns_lg' 
@@ -15,4 +18,39 @@
 
 # TODO execution of TPT scripts TO READ ALL DATABASES FROM A GIVEN INPUT DAY
 
-tbuild -f load.txt -v jobvars.txt -j file_load
+# Dossiers contenant les scripts SQL
+DOSSIER_JOBVARS="bdd_creation_scripts"
+DOSSIER_LOAD="tables_creation_scripts"
+DATE="dates"
+
+SCRIPT_JOBVARS=(
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
+)
+
+SCRIPT_LOAD=(
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+    "$DOSSIER_LOAD/load_chambre.txt"
+)
+
+# Initialisation du fichier de log
+echo "Début de l'installation: $(date)" > $LOGFILE
+
+# Fonction pour exécuter un script SQL avec TPT 
+for ((i=0; i<${#SCRIPT_JOBVARS[@]}; i++))
+do
+    tbuild -f "${SCRIPT_LOAD[$i]}" -v "${SCRIPT_JOBVARS[$i]}" -j file_load
+done
+
+# Fin du fichier de log
+echo "Fin de l'installation: $(date)" >> $LOGFILE
