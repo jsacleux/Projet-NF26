@@ -19,9 +19,9 @@ LOGFILE="LAUNCH_LOAD_SID.log"
 # TODO execution of TPT scripts TO READ ALL DATABASES FROM A GIVEN INPUT DAY
 
 # Dossiers contenant les scripts SQL
-DOSSIER_JOBVARS="load_scripts"
-DOSSIER_LOAD="jobvars_scripts"
-DATE="dates"
+DOSSIER_LOAD="load_scripts"
+DOSSIER_JOBVARS="jobvars_scripts"
+DATE="20240429"
 
 SCRIPT_JOBVARS=(
     "$DOSSIER_JOBVARS/jobvars_chambre.txt"
@@ -49,6 +49,7 @@ echo "Début de l'installation: $(date)" > $LOGFILE
 # Fonction pour exécuter un script SQL avec TPT 
 for ((i=0; i<${#SCRIPT_JOBVARS[@]}; i++))
 do
+    echo "tbuild -f \"${SCRIPT_LOAD[$i]}\" -v \"${SCRIPT_JOBVARS[$i]}\" -j file_load"
     tbuild -f "${SCRIPT_LOAD[$i]}" -v "${SCRIPT_JOBVARS[$i]}" -j file_load
 done
 
