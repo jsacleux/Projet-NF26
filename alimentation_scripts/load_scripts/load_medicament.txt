@@ -1,0 +1,60 @@
+DEFINE JOB file_load
+DESCRIPTION 'Load Teradata medicament table from a file'
+(
+    /*
+    Define the schema of the data in the csv file for hospitalisation
+    */
+    DEFINE SCHEMA SCHEMA_IRS
+    (
+        in_cd_medicament VARCHAR(10),
+        in_nom_medicament VARCHAR(250),
+        in_condit_medicament VARCHAR(100),
+        in_catg_medicament VARCHAR(100),
+        in_marque_fabri VARCHAR(100)
+    );
+
+    /*
+        In the first step, we are sending statements to remove old tables
+        and create a new one.
+        This step replies on configuration stored in `od_IRS` operator
+    */
+    STEP st_Setup_Tables
+    (
+        APPLY
+            ('DROP TABLE ' || @LoadTargetTable || ';'),
+            ('CREATE TABLE ' || @LoadTargetTable || ' (
+
+                CD_MEDICAMENT VARCHAR(10),
+                NOM_MEDICAMENT VARCHAR(250),
+                CONDIT_MEDICAMENT VARCHAR(100),
+                CATG_MEDICAMENT VARCHAR(100),
+                MARQUE_FABRI VARCHAR(100)
+            );')
+
+        TO OPERATOR ($DDL);
+    );
+
+    /*
+    Finally, in this step we read the data from the file operator
+    and send it to the load operator.
+    */
+    STEP st_Load_File
+    (
+        APPLY
+        ('INSERT INTO ' || @LoadTargetTable || ' (
+            CD_MEDICAMENT,
+            NOM_MEDICAMENT,
+            CONDIT_MEDICAMENT,
+            CATG_MEDICAMENT,
+            MARQUE_FABRI
+        ) VALUES (
+            :in_cd_medicament,
+            :in_nom_medicament,
+            :in_condit_medicament,
+            :in_catg_medicament,
+            :in_marque_fabri
+        );')
+        TO OPERATOR ($LOAD)
+        SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+    );
+);
