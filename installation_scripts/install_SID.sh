@@ -12,6 +12,7 @@ SCRIPTS_DB_CREATION=(
     "$DOSSIER_DB_CREATION/SOC_database_creation.sql"
     "$DOSSIER_DB_CREATION/STG_database_creation.sql"
     "$DOSSIER_DB_CREATION/TCH_database_creation.sql"
+    "$DOSSIER_DB_CREATION/WRK_database_creation.sql"
 )
 
 # Liste des scripts SQL à exécuter pour la création de tables
@@ -19,6 +20,7 @@ SCRIPTS_TABLES_CREATION=(
     "$DOSSIER_TABLES_CREATION/SOC_tables_creation.sql"
     "$DOSSIER_TABLES_CREATION/STG_tables_creation.sql"
     "$DOSSIER_TABLES_CREATION/TCH_tables_creation.sql"
+    "$DOSSIER_TABLES_CREATION/WRK_tables_creation.sql"
 )
 
 # Initialisation du fichier de log
