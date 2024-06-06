@@ -3,6 +3,14 @@
 # Variables
 LOGFILE="LAUNCH_LOAD_SID.log"
 
+# Function to extract date from file name
+extract_date_from_filename() {
+    filename="$1"
+    # Extracting date from filename assuming it's in the format YYYYMMDD
+    DATE="${filename: -12:8}"
+    echo $DATE
+}
+
 ### TODO ADD 
 ## In jobvars.txt :
 # LoadLogTable    = 'irs.irs_returns_lg' 
@@ -21,7 +29,6 @@ LOGFILE="LAUNCH_LOAD_SID.log"
 # Dossiers contenant les scripts SQL
 DOSSIER_LOAD="load_scripts"
 DOSSIER_JOBVARS="jobvars_scripts"
-DATE="20240429"
 
 SCRIPT_JOBVARS=(
     "$DOSSIER_JOBVARS/jobvars_chambre.txt"
@@ -49,8 +56,10 @@ echo "Début de l'installation: $(date)" > $LOGFILE
 # Fonction pour exécuter un script SQL avec TPT 
 for ((i=0; i<${#SCRIPT_JOBVARS[@]}; i++))
 do
-    echo "tbuild -f \"${SCRIPT_LOAD[$i]}\" -v \"${SCRIPT_JOBVARS[$i]}\" -j file_load"
-    tbuild -f "${SCRIPT_LOAD[$i]}" -v "${SCRIPT_JOBVARS[$i]}" -j file_load
+    # Extracting date from load script filename
+    extract_date_from_filename "${SCRIPT_LOAD[$i]}"
+    echo "tbuild -f \"${SCRIPT_LOAD[$i]}\" -v \"${SCRIPT_JOBVARS[$i]}\" -j file_load -d $DATE"
+    tbuild -f "${SCRIPT_LOAD[$i]}" -v "${SCRIPT_JOBVARS[$i]}" -j file_load -d "$DATE"
 done
 
 # Fin du fichier de log
