@@ -26,7 +26,7 @@ TargetUserName        = 'dbc'
 TargetUserPassword    = 'dbc'
 
 FileReaderDirectoryPath = "/root/Data_Hospital/BDD_HOSPITAL_${DATE}/"
-FileReaderFileName      = "${table_name}_\${DATE}.txt"
+FileReaderFileName      = "${table_name}_${DATE}.txt"
 FileReaderFormat        = 'Delimited'
 FileReaderOpenMode      = 'Read'
 FileReaderTextDelimiter = ';'
