@@ -2,14 +2,7 @@
 
 # Variables
 LOGFILE="LAUNCH_LOAD_SID.log"
-
-# Function to extract date from file name
-extract_date_from_filename() {
-    filename="$1"
-    # Extracting date from filename assuming it's in the format YYYYMMDD
-    DATE="${filename: -12:8}"
-    echo $DATE
-}
+DATA_HOSPITAL_DIR="/root/Data_Hospital"
 
 ### TODO ADD 
 ## In jobvars.txt :
@@ -30,36 +23,26 @@ extract_date_from_filename() {
 DOSSIER_LOAD="load_scripts"
 DOSSIER_JOBVARS="jobvars_scripts"
 
-SCRIPT_JOBVARS=(
-    "$DOSSIER_JOBVARS/jobvars_chambre.txt"
-    "$DOSSIER_JOBVARS/jobvars_consultation.txt"
-    "$DOSSIER_JOBVARS/jobvars_hospitalisation.txt"
-    "$DOSSIER_JOBVARS/jobvars_medicament.txt"
-    "$DOSSIER_JOBVARS/jobvars_patient.txt"
-    "$DOSSIER_JOBVARS/jobvars_personnel.txt"
-    "$DOSSIER_JOBVARS/jobvars_traitement.txt"
-)
-
-SCRIPT_LOAD=(
-    "$DOSSIER_LOAD/load_chambre.txt"
-    "$DOSSIER_LOAD/load_consultation.txt"
-    "$DOSSIER_LOAD/load_hospitalisation.txt"
-    "$DOSSIER_LOAD/load_medicament.txt"
-    "$DOSSIER_LOAD/load_patient.txt"
-    "$DOSSIER_LOAD/load_personnel.txt"
-    "$DOSSIER_LOAD/load_traitement.txt"
-)
 
 # Initialisation du fichier de log
 echo "Début de l'installation: $(date)" > $LOGFILE
 
-# Fonction pour exécuter un script SQL avec TPT 
-for ((i=0; i<${#SCRIPT_JOBVARS[@]}; i++))
-do
-    # Extracting date from load script filename
-    extract_date_from_filename "${SCRIPT_LOAD[$i]}"
-    echo "tbuild -f \"${SCRIPT_LOAD[$i]}\" -v \"${SCRIPT_JOBVARS[$i]}\" -j file_load -d $DATE"
-    tbuild -f "${SCRIPT_LOAD[$i]}" -v "${SCRIPT_JOBVARS[$i]}" -j file_load -d "$DATE"
+# Loop through each subdirectory in Data_hospital
+for subdir in "$DATA_HOSPITAL_DIR"/BDD_HOSPITAL_*; do
+    # Extract the date from the subdirectory name
+    DATE=$(basename "$subdir" | cut -d '_' -f 3)
+    
+    # Loop through files in the subdirectory
+    for file in "$subdir"/*; do
+        # Extract the table name from the file
+        TABLE=$(basename "$file" | cut -d '_' -f 1)
+
+
+        # Execute TPT script with dynamically set variables
+        echo "tbuild -f \"$file\" -v \"$DOSSIER_JOBVARS/jobvars_${TABLE}.sh\" -j "file_load_${TABLE}_${DATE}""
+        tbuild -f "$file" -v "$DOSSIER_JOBVARS/jobvars_${TABLE}.sh" -j "file_load_${TABLE}_${DATE}" -d "$DATE"
+        cat "$DOSSIER_JOBVARS/jobvars_${TABLE}.sh"
+    done
 done
 
 # Fin du fichier de log
