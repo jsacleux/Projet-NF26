@@ -1,0 +1,30 @@
+.LOGON localhost/dbc,dbc;
+
+-- Les tables WRK sont recréées à chaque exécution
+
+--Table CHAMBRE
+-- Verification si table Chambre existe
+SELECT * FROM dbc.tables where tablename='WRK_CHAMBRE';
+
+-- Suppression de la table Chambre si elle existe
+.IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CHAMBRE;
+DROP TABLE WRK.WRK_CHAMBRE;
+
+-- Creation de la table Chambre
+.LABEL LABEL_SKIP_DELETE_CHAMBRE
+
+CREATE SET TABLE WRK.WRK_CHAMBRE (
+    NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
+    NOM_CHAMBRE VARCHAR(20) NOT NULL,
+    NO_ETAGE BYTEINT,
+    NOM_BATIMENT VARCHAR(20),
+    TYPE_CHAMBRE VARCHAR(20),
+    PRIX_JOUR SMALLINT NOT NULL,
+    DT_CREATION DATE NOT NULL,
+    EXEC_ID INTEGER
+);
+
+.IF ERRORCODE <> 0 THEN .QUIT 100;
+
+.LOGOFF;
+.EXIT;
