@@ -1,31 +1,73 @@
-DEFINE JOB file_load
-DESCRIPTION 'Load a Teradata table from a file'
+DEFINE JOB import_file_CHAMBRE
+DESCRIPTION 'Load CHAMBRE_XXXXXXXX.tpt in CHAMBRE table'
 (
   /*
-    Define the schema of the data in the csv file
+    Define the schema of the data in the TPT file
   */
   DEFINE SCHEMA SCHEMA_INPUT_CHAMBRE
     (
-      in_no_chambre VARCHAR(20),
+      in_no_chambre INTEGER,
       in_nom_chambre VARCHAR(20),
-      in_no_etage VARCHAR(20),
+      in_no_etage BYTEINT,
       in_nom_batiment VARCHAR(20),
       in_type_chambre VARCHAR(20),
-      in_prix_jour VARCHAR(20),
-      in_dt_creation VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD')
+      in_prix_jour SMALLINT,
+      in_dt_creation DATE
     );
 
   /*
-     In the first step, we are sending statements to remove old tables
-     and create a new one.
-     This step replies on configuration stored in `od_IRS` operator
+    Define the file reader operator to read the TPT file
+  */
+  DEFINE OPERATOR $FILE_READER
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA *
+    ATTRIBUTES
+      (
+        VARCHAR FileName = '<path_to_your_tpt_file>',
+        VARCHAR Format = 'TPT',
+        VARCHAR OpenMode = 'Read'
+      );
+
+  /*
+    Define the DDL operator for executing DDL statements
+  */
+  DEFINE OPERATOR $DDL
+    TYPE DDL
+    ATTRIBUTES
+      (
+        VARCHAR TdpId = '<your_tdpid>',
+        VARCHAR UserName = '<your_username>',
+        VARCHAR UserPassword = '<your_password>',
+        VARCHAR ErrorList = '3807'
+      );
+
+  /*
+    Define the load operator for loading data into the target table
+  */
+  DEFINE OPERATOR $LOAD
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+      (
+        VARCHAR TdpId = '<your_tdpid>',
+        VARCHAR UserName = '<your_username>',
+        VARCHAR UserPassword = '<your_password>',
+        VARCHAR LogTable = '<your_log_table>',
+        VARCHAR ErrorTable1 = '<your_error_table_1>',
+        VARCHAR ErrorTable2 = '<your_error_table_2>',
+        VARCHAR ErrorTable3 = '<your_error_table_3>'
+      );
+
+  /*
+    In the first step, we are sending statements to remove old tables
+    and create a new one.
+    This step replies on configuration stored in `$DDL` operator
   */
   STEP st_Setup_Tables
   (
     APPLY
       ('DROP TABLE ' || @LoadTargetTable || ';'),
       ('CREATE TABLE ' || @LoadTargetTable || ' (
-
           NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
           NOM_CHAMBRE VARCHAR(20) NOT NULL,
           NO_ETAGE BYTEINT,
@@ -34,7 +76,6 @@ DESCRIPTION 'Load a Teradata table from a file'
           PRIX_JOUR SMALLINT NOT NULL,
           DT_CREATION DATE NOT NULL
         );')
-
     TO OPERATOR ($DDL);
   );
 

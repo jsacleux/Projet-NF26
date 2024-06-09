@@ -1,0 +1,96 @@
+DEFINE JOB load_CHAMBRE
+DESCRIPTION 'Load a Teradata table from a file'
+(
+    DEFINE SCHEMA SCHEMA_INPUT_CHAMBRE
+    (
+        in_no_chambre VARCHAR(20),
+        in_nom_chambre VARCHAR(20),
+        in_no_etage VARCHAR(20),
+        in_nom_batiment VARCHAR(20),
+        in_type_chambre VARCHAR(20),
+        in_prix_jour VARCHAR(20),
+        in_dt_creation VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD')
+    );
+
+    DEFINE OPERATOR op_CHAMBRE
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA SCHEMA_INPUT_CHAMBRE
+    ATTRIBUTES
+    (
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || '$(DATE)' || '/',
+        VARCHAR FileName = 'CHAMBRE_' || '$(DATE)' || '.txt',
+        VARCHAR Format = 'Delimited',
+        VARCHAR OpenMode = 'Read',
+        VARCHAR TextDelimiter = ';',
+        INTEGER SkipRows = 1
+    );
+
+    DEFINE OPERATOR od_CHAMBRE
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
+    DEFINE OPERATOR ol_CHAMBRE
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_CHAMBRE',
+        VARCHAR ErrorTable1 = 'STG.error_CHAMBRE',
+        VARCHAR TargetTable = 'STG.CHAMBRE'
+    );
+
+    STEP stSetup_Tables
+    (
+        APPLY
+        (
+            'DROP TABLE STG.log_CHAMBRE;',
+            'DROP TABLE STG.error_CHAMBRE;',
+            'DROP TABLE STG.CHAMBRE;',
+            'CREATE MULTISET TABLE STG.CHAMBRE (
+                NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
+                NOM_CHAMBRE VARCHAR(20) NOT NULL,
+                NO_ETAGE BYTEINT,
+                NOM_BATIMENT VARCHAR(20),
+                TYPE_CHAMBRE VARCHAR(20),
+                PRIX_JOUR SMALLINT NOT NULL,
+                DT_CREATION DATE NOT NULL
+            );'
+        )
+        TO OPERATOR (od_CHAMBRE);
+    );
+
+    STEP stLOAD_FILE
+    (
+        APPLY
+        (
+            'INSERT INTO STG.CHAMBRE (
+                NO_CHAMBRE,
+                NOM_CHAMBRE,
+                NO_ETAGE,
+                NOM_BATIMENT,
+                TYPE_CHAMBRE,
+                PRIX_JOUR,
+                DT_CREATION
+            ) VALUES (
+                :in_no_chambre,
+                :in_nom_chambre,
+                :in_no_etage,
+                :in_nom_batiment,
+                :in_type_chambre,
+                :in_prix_jour,
+                :in_dt_creation
+            );'
+        )
+        TO OPERATOR (ol_CHAMBRE)
+        SELECT * FROM OPERATOR(op_CHAMBRE);
+    );
+);

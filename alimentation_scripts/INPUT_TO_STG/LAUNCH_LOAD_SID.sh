@@ -3,7 +3,6 @@
 # Variables
 LOGFILE="LAUNCH_LOAD_SID.log"
 DATA_HOSPITAL_DIR="/root/Data_Hospital"
-DOSSIER_LOAD="load_scripts"
 DOSSIER_JOBVARS="jobvars_scripts"
 
 # Function to extract date from directory name
@@ -24,8 +23,8 @@ TargetTdpId           = '127.0.0.1'
 TargetUserName        = 'dbc'
 TargetUserPassword    = 'dbc'
 
-FileReaderDirectoryPath = "/root/Data_Hospital/BDD_HOSPITAL_${DATE}/"
-FileReaderFileName      = "${table_name}_${DATE}.txt"
+FileReaderDirectoryPath = "/root/Data_Hospital/BDD_HOSPITAL_\$DATE/"
+FileReaderFileName      = "${table_name}_\$DATE.txt"
 FileReaderFormat        = 'Delimited'
 FileReaderOpenMode      = 'Read'
 FileReaderTextDelimiter = ';'
@@ -55,9 +54,10 @@ for subdir in "$DATA_HOSPITAL_DIR"/BDD_HOSPITAL_*; do
         echo "Generating jobvars file for table $TABLE with date $DATE"
         create_jobvars_file "$TABLE" "$DATE" "$JOBVARS_FILE"
 
-        # Execute TPT script with dynamically set variables
-        echo "tbuild -f \"$file\" -v \"$JOBVARS_FILE\" -j \"file_load_${TABLE}_${DATE}\" -d \"$DATE\""
-        tbuild -f "$file" -v "$JOBVARS_FILE" -j "file_load_${TABLE}_${DATE}" -d "$DATE"
+        # Execute TPT script with the corresponding file
+        TPT_SCRIPT="$DOSSIER_JOBVARS/load_${TABLE}.tpt"
+        echo "Running TPT script for table $TABLE"
+        tbuild -f "$TPT_SCRIPT"
 
         # Log the content of the jobvars file for verification
         cat "$JOBVARS_FILE"
