@@ -1,84 +1,73 @@
-DEFINE JOB file_load
+DEFINE JOB load_PERSONNEL
 DESCRIPTION 'Load a Teradata table from a file'
 (
-  /*
-    Define the schema of the data in the csv file
-  */
-  DEFINE SCHEMA SCHEMA_IRS
+    DEFINE SCHEMA SCHEMA_INPUT_PERSONNEL
     (
-      in_id_personnel VARCHAR(20),
-      in_nom_personnel VARCHAR(100),
-      in_prenom_personnel VARCHAR(100),
-      in_fonction_personnel VARDATE(20),
-      in_ts_debut_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MM:SS') FORMATOUT ('YYYY-MM-DD HH:MM:SS'),
-      in_ts_fin_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MM:SS') FORMATOUT ('YYYY-MM-DD HH:MM:SS'),
-      in_raison_fin_activite VARCHAR(100),
-      in_ts_creation_personnel VARCHAR(20),
-      in_ts_maj_personnel VARCHAR(20) VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD'),
-      in_cd_statut_personnel VARCHAR(20)
+        in_id_personnel VARCHAR(20),
+        in_nom_personnel VARCHAR(100),
+        in_prenom_personnel VARCHAR(100),
+        in_fonction_personnel VARCHAR(100),
+        in_ts_debut_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
+        in_ts_fin_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
+        in_raison_fin_activite VARCHAR(100),
+        in_ts_creation_personnel VARCHAR(20),
+        in_ts_maj_personnel VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD'),
+        in_cd_statut_personnel VARCHAR(20)
     );
 
+    DEFINE OPERATOR op_PERSONNEL
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA SCHEMA_INPUT_PERSONNEL
+    ATTRIBUTES
+    (
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR FileName = 'PERSONNEL_' || @DATE || '.txt',
+        VARCHAR Format = 'Delimited',
+        VARCHAR OpenMode = 'Read',
+        VARCHAR TextDelimiter = ';',
+        INTEGER SkipRows = 1
+    );
 
-  /*
-     In the first step, we are sending statements to remove old tables
-     and create a new one.
-     This step replies on configuration stored in `od_IRS` operator
-  */
-  STEP st_Setup_Tables
-  (
-    APPLY
-      ('DROP TABLE ' || @LoadTargetTable || ';'),
-      ('CREATE TABLE ' || @LoadTargetTable || ' (
+    DEFINE OPERATOR ol_PERSONNEL
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR TargetTable = 'STG.PERSONNEL'
+    );
 
-        ID_PERSONNEL INTEGER NOT NULL PRIMARY KEY,
-        NOM_PERSONNEL VARCHAR(100) NOT NULL,
-        PRENOM_PERSONNEL VARCHAR(100) NOT NULL,
-        FONCTION_PERSONNEL VARCHAR(50) NOT NULL,
-        TS_DEBUT_ACTIVITE TIMESTAMP(0) NOT NULL,
-        TS_FIN_ACTIVITE TIMESTAMP(0),
-        RAISON_FIN_ACTIVITE  VARCHAR(100),
-        TS_CREATION_PERSONNEL TIMESTAMP(0) NOT NULL,
-        TS_MAJ_PERSONNEL TIMESTAMP(0) NOT NULL,
-        CD_STATUT_PERSONNEL  VARCHAR(10) NOT NULL
-
-        );')
-
-    TO OPERATOR ($DDL);
-  );
-
-  /*
-    Finally, in this step we read the data from the file operator
-    and send it to the load operator.
-  */
-  STEP st_Load_File
-  (
-    APPLY
-      ('INSERT INTO ' || @LoadTargetTable || ' (
-          ID_PERSONNEL,
-          NOM_PERSONNEL,
-          PRENOM_PERSONNEL,
-          FONCTION_PERSONNEL,
-          TS_DEBUT_ACTIVITE,
-          TS_FIN_ACTIVITE,
-          RAISON_FIN_ACTIVITE,
-          TS_CREATION_PERSONNEL,
-          TS_MAJ_PERSONNEL,
-          CD_STATUT_PERSONNEL
-
-
-      ) VALUES (
-          :in_id_personnel,
-          :in_nom_personnel,
-          :in_prenom_personnel,
-          :in_fonction_personnel,
-          :in_ts_debut_activite,
-          :in_ts_fin_activite,
-          :in_raison_fin_activite,
-          :in_ts_creation_personnel,
-          :in_ts_maj_personnel,
-          :in_cd_statut_personnel
-      );')
-    TO OPERATOR ($LOAD)
-    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
-  );
+    STEP stLOAD_FILE
+    (
+        APPLY
+        (
+            'INSERT INTO STG.PERSONNEL (
+                ID_PERSONNEL,
+                NOM_PERSONNEL,
+                PRENOM_PERSONNEL,
+                FONCTION_PERSONNEL,
+                TS_DEBUT_ACTIVITE,
+                TS_FIN_ACTIVITE,
+                RAISON_FIN_ACTIVITE,
+                TS_CREATION_PERSONNEL,
+                TS_MAJ_PERSONNEL,
+                CD_STATUT_PERSONNEL
+            ) VALUES (
+                :in_id_personnel,
+                :in_nom_personnel,
+                :in_prenom_personnel,
+                :in_fonction_personnel,
+                :in_ts_debut_activite,
+                :in_ts_fin_activite,
+                :in_raison_fin_activite,
+                :in_ts_creation_personnel,
+                :in_ts_maj_personnel,
+                :in_cd_statut_personnel
+            );'
+        )
+        TO OPERATOR (ol_PERSONNEL)
+        SELECT * FROM OPERATOR(op_PERSONNEL);
+    );
 );

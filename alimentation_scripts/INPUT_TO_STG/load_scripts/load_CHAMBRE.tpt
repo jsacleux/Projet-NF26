@@ -17,22 +17,12 @@ DESCRIPTION 'Load a Teradata table from a file'
     SCHEMA SCHEMA_INPUT_CHAMBRE
     ATTRIBUTES
     (
-        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || '$(DATE)' || '/',
-        VARCHAR FileName = 'CHAMBRE_' || '$(DATE)' || '.txt',
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR FileName = 'CHAMBRE_' || @DATE || '.txt',
         VARCHAR Format = 'Delimited',
         VARCHAR OpenMode = 'Read',
         VARCHAR TextDelimiter = ';',
         INTEGER SkipRows = 1
-    );
-
-    DEFINE OPERATOR od_CHAMBRE
-    TYPE DDL
-    ATTRIBUTES
-    (
-        VARCHAR TdpId = '127.0.0.1',
-        VARCHAR UserName = 'dbc',
-        VARCHAR UserPassword = 'dbc',
-        VARCHAR ErrorList = '3807'
     );
 
     DEFINE OPERATOR ol_CHAMBRE
@@ -43,29 +33,7 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
-        VARCHAR LogTable = 'STG.log_CHAMBRE',
-        VARCHAR ErrorTable1 = 'STG.error_CHAMBRE',
         VARCHAR TargetTable = 'STG.CHAMBRE'
-    );
-
-    STEP stSetup_Tables
-    (
-        APPLY
-        (
-            'DROP TABLE STG.log_CHAMBRE;',
-            'DROP TABLE STG.error_CHAMBRE;',
-            'DROP TABLE STG.CHAMBRE;',
-            'CREATE MULTISET TABLE STG.CHAMBRE (
-                NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
-                NOM_CHAMBRE VARCHAR(20) NOT NULL,
-                NO_ETAGE BYTEINT,
-                NOM_BATIMENT VARCHAR(20),
-                TYPE_CHAMBRE VARCHAR(20),
-                PRIX_JOUR SMALLINT NOT NULL,
-                DT_CREATION DATE NOT NULL
-            );'
-        )
-        TO OPERATOR (od_CHAMBRE);
     );
 
     STEP stLOAD_FILE

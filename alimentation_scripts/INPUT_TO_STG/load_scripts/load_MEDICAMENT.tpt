@@ -1,10 +1,7 @@
-DEFINE JOB file_load
-DESCRIPTION 'Load Teradata medicament table from a file'
+DEFINE JOB load_MEDICAMENT
+DESCRIPTION 'Load a Teradata table from a file'
 (
-    /*
-    Define the schema of the data in the csv file for hospitalisation
-    */
-    DEFINE SCHEMA SCHEMA_IRS
+    DEFINE SCHEMA SCHEMA_INPUT_MEDICAMENT
     (
         in_cd_medicament VARCHAR(10),
         in_nom_medicament VARCHAR(250),
@@ -13,48 +10,49 @@ DESCRIPTION 'Load Teradata medicament table from a file'
         in_marque_fabri VARCHAR(100)
     );
 
-    /*
-        In the first step, we are sending statements to remove old tables
-        and create a new one.
-        This step replies on configuration stored in `od_IRS` operator
-    */
-    STEP st_Setup_Tables
+    DEFINE OPERATOR op_MEDICAMENT
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA SCHEMA_INPUT_MEDICAMENT
+    ATTRIBUTES
     (
-        APPLY
-            ('DROP TABLE ' || @LoadTargetTable || ';'),
-            ('CREATE TABLE ' || @LoadTargetTable || ' (
-
-                CD_MEDICAMENT VARCHAR(10),
-                NOM_MEDICAMENT VARCHAR(250),
-                CONDIT_MEDICAMENT VARCHAR(100),
-                CATG_MEDICAMENT VARCHAR(100),
-                MARQUE_FABRI VARCHAR(100)
-            );')
-
-        TO OPERATOR ($DDL);
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR FileName = 'MEDICAMENT_' || @DATE || '.txt',
+        VARCHAR Format = 'Delimited',
+        VARCHAR OpenMode = 'Read',
+        VARCHAR TextDelimiter = ';',
+        INTEGER SkipRows = 1
     );
 
-    /*
-    Finally, in this step we read the data from the file operator
-    and send it to the load operator.
-    */
-    STEP st_Load_File
+    DEFINE OPERATOR ol_MEDICAMENT
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR TargetTable = 'STG.MEDICAMENT'
+    );
+
+    STEP stLOAD_FILE
     (
         APPLY
-        ('INSERT INTO ' || @LoadTargetTable || ' (
-            CD_MEDICAMENT,
-            NOM_MEDICAMENT,
-            CONDIT_MEDICAMENT,
-            CATG_MEDICAMENT,
-            MARQUE_FABRI
-        ) VALUES (
-            :in_cd_medicament,
-            :in_nom_medicament,
-            :in_condit_medicament,
-            :in_catg_medicament,
-            :in_marque_fabri
-        );')
-        TO OPERATOR ($LOAD)
-        SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+        (
+            'INSERT INTO STG.MEDICAMENT (
+                CD_MEDICAMENT,
+                NOM_MEDICAMENT,
+                CONDIT_MEDICAMENT,
+                CATG_MEDICAMENT,
+                MARQUE_FABRI
+            ) VALUES (
+                :in_cd_medicament,
+                :in_nom_medicament,
+                :in_condit_medicament,
+                :in_catg_medicament,
+                :in_marque_fabri
+            );'
+        )
+        TO OPERATOR (ol_MEDICAMENT)
+        SELECT * FROM OPERATOR(op_MEDICAMENT);
     );
 );

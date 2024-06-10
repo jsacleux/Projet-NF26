@@ -1,16 +1,13 @@
-DEFINE JOB file_load
+DEFINE JOB load_CONSULTATION
 DESCRIPTION 'Load a Teradata table from a file'
 (
-  /*
-    Define the schema of the data in the csv file
-  */
-  DEFINE SCHEMA SCHEMA_IRS
+    DEFINE SCHEMA SCHEMA_INPUT_CONSULTATION
     (
       in_id_consult VARCHAR(20),
       in_id_personnel VARCHAR(20),
       in_id_patient VARCHAR(20),
-      in_ts_debut_consult VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MM:SS') FORMATOUT ('YYYY-MM-DD HH:MM:SS'),
-      in_ts_fin_consult VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MM:SS') FORMATOUT ('YYYY-MM-DD HH:MM:SS'),
+      in_ts_debut_consult VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
+      in_ts_fin_consult VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
       in_poids_patient VARCHAR(20),
       in_temp_patient VARCHAR(20),
       in_unit_temp VARCHAR(20),
@@ -21,75 +18,65 @@ DESCRIPTION 'Load a Teradata table from a file'
       in_indic_hospi VARCHAR(20)
     );
 
+    DEFINE OPERATOR op_CONSULTATION
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA SCHEMA_INPUT_CONSULTATION
+    ATTRIBUTES
+    (
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR FileName = 'CONSULTATION_' || @DATE || '.txt',
+        VARCHAR Format = 'Delimited',
+        VARCHAR OpenMode = 'Read',
+        VARCHAR TextDelimiter = ';',
+        INTEGER SkipRows = 1
+    );
 
-  /*
-     In the first step, we are sending statements to remove old tables
-     and create a new one.
-     This step replies on configuration stored in `od_IRS` operator
-  */
-  STEP st_Setup_Tables
-  (
-    APPLY
-      ('DROP TABLE ' || @LoadTargetTable || ';'),
-      ('CREATE TABLE ' || @LoadTargetTable || ' (
+    DEFINE OPERATOR ol_CONSULTATION
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR TargetTable = 'STG.CONSULTATION'
+    );
 
-        ID_CONSULT INTEGER NOT NULL PRIMARY KEY,
-        ID_PERSONNEL INTEGER NOT NULL,
-        ID_PATIENT INTEGER NOT NULL,
-        TS_DEBUT_CONSULT TIMESTAMP(0) NOT NULL,
-        TS_FIN_CONSULT TIMESTAMP(0) NOT NULL,
-        POIDS_PATIENT INTEGER NOT NULL,
-        TEMP_PATIENT INTEGER,
-        UNIT_TEMP VARCHAR(15),
-        TENSION_PATIENT INTEGER, 
-        DSC_PATHO VARCHAR(250),
-        INDIC_DIABETE VARCHAR(10),
-        ID_TRAITEMENT INTEGER,
-        INDIC_HOSPI VARCHAR(10)
-
-        );')
-
-    TO OPERATOR ($DDL);
-  );
-
-  /*
-    Finally, in this step we read the data from the file operator
-    and send it to the load operator.
-  */
-  STEP st_Load_File
-  (
-    APPLY
-      ('INSERT INTO ' || @LoadTargetTable || ' (
-          ID_CONSULT,
-          ID_PERSONNEL,
-          ID_PATIENT,
-          TS_DEBUT_CONSULT,
-          TS_FIN_CONSULT,
-          POIDS_PATIENT,
-          TEMP_PATIENT,
-          UNIT_TEMP,
-          TENSION_PATIENT, 
-          DSC_PATHO,
-          INDIC_DIABETE,
-          ID_TRAITEMENT,
-          INDIC_HOSPI
-
-      ) VALUES (
-          :in_id_consult,
-          :in_id_personnel,
-          :in_id_patient,
-          :in_ts_debut_consult,
-          :in_ts_fin_consult,
-          :in_poids_patient,
-          :in_temp_patient,
-          :in_unit_temp,
-          :in_tension_patient,
-          :in_dsc_patho,
-          :in_indic_diabete,
-          :in_id_traitement,
-          :in_indic_hospi
-      );')
-    TO OPERATOR ($LOAD)
-    SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
-  );
+    STEP stLOAD_FILE
+    (
+        APPLY
+        (
+            'INSERT INTO STG.CONSULTATION (
+                ID_CONSULT,
+                ID_PERSONNEL,
+                ID_PATIENT,
+                TS_DEBUT_CONSULT,
+                TS_FIN_CONSULT,
+                POIDS_PATIENT,
+                TEMP_PATIENT,
+                UNIT_TEMP,
+                TENSION_PATIENT, 
+                DSC_PATHO,
+                INDIC_DIABETE,
+                ID_TRAITEMENT,
+                INDIC_HOSPI
+            ) VALUES (
+                :in_id_consult,
+                :in_id_personnel,
+                :in_id_patient,
+                :in_ts_debut_consult,
+                :in_ts_fin_consult,
+                :in_poids_patient,
+                :in_temp_patient,
+                :in_unit_temp,
+                :in_tension_patient,
+                :in_dsc_patho,
+                :in_indic_diabete,
+                :in_id_traitement,
+                :in_indic_hospi
+            );'
+        )
+        TO OPERATOR (ol_CONSULTATION)
+        SELECT * FROM OPERATOR(op_CONSULTATION);
+    );
 );

@@ -1,68 +1,64 @@
-DEFINE JOB file_load
-DESCRIPTION 'Load Teradata hospitalisation table from a file'
+DEFINE JOB load_HOSPITALISATION
+DESCRIPTION 'Load a Teradata table from a file'
 (
-    /*
-    Define the schema of the data in the csv file for hospitalisation
-    */
-    DEFINE SCHEMA SCHEMA_IRS
+    DEFINE SCHEMA SCHEMA_INPUT_HOSPITALISATION
     (
         in_id_hospi VARCHAR(20),
         in_consult VARCHAR(20),
         in_no_chambre VARCHAR(20),
         in_ts_debut_hospi VARCHAR(20),
-        in_ts_debut_hospi VARCHAR(20),
+        in_ts_fin_hospi VARCHAR(20),
         in_cout_hospi VARCHAR(20),
         in_personnel_resp VARCHAR(20)
     );
 
-    /*
-        In the first step, we are sending statements to remove old tables
-        and create a new one.
-        This step replies on configuration stored in `od_IRS` operator
-    */
-    STEP st_Setup_Tables
+    DEFINE OPERATOR op_HOSPITALISATION
+    TYPE DATACONNECTOR PRODUCER
+    SCHEMA SCHEMA_INPUT_HOSPITALISATION
+    ATTRIBUTES
     (
-        APPLY
-            ('DROP TABLE ' || @LoadTargetTable || ';'),
-            ('CREATE TABLE ' || @LoadTargetTable || ' (
-
-                ID_HOSPI INTEGER,
-                ID_CONSULT INTEGER,
-                NO_CHAMBRE SMALLINT,
-                TS_DEBUT_HOSPI TIMESTAMP(0),
-                TS_FIN_HOSPI TIMESTAMP(0),
-                COUT_HOSPI INTEGER,
-                ID_PERSONNEL_RESP INTEGER
-            );')
-
-        TO OPERATOR ($DDL);
+        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR FileName = 'HOSPITALISATION_' || @DATE || '.txt',
+        VARCHAR Format = 'Delimited',
+        VARCHAR OpenMode = 'Read',
+        VARCHAR TextDelimiter = ';',
+        INTEGER SkipRows = 1
     );
 
-    /*
-    Finally, in this step we read the data from the file operator
-    and send it to the load operator.
-    */
-    STEP st_Load_File
+    DEFINE OPERATOR ol_HOSPITALISATION
+    TYPE LOAD
+    SCHEMA *
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR TargetTable = 'STG.HOSPITALISATION'
+    );
+
+    STEP stLOAD_FILE
     (
         APPLY
-        ('INSERT INTO ' || @LoadTargetTable || ' (
-            ID_HOSPI,
-            ID_CONSULT,
-            NO_CHAMBRE,
-            TS_DEBUT_HOSPI,
-            TS_FIN_HOSPI,
-            COUT_HOSPI,
-            ID_PERSONNEL_RESP
-        ) VALUES (
-            :in_id_hospi,
-            :in_consult,
-            :in_no_chambre,
-            :in_ts_debut_hospi,
-            :in_ts_debut_hospi,
-            :in_cout_hospi,
-            :in_personnel_resp
-        );')
-        TO OPERATOR ($LOAD)
-        SELECT * FROM OPERATOR($FILE_READER(SCHEMA_IRS));
+        (
+            'INSERT INTO STG.HOSPITALISATION (
+                ID_HOSPI,
+                ID_CONSULT,
+                NO_CHAMBRE,
+                TS_DEBUT_HOSPI,
+                TS_FIN_HOSPI,
+                COUT_HOSPI,
+                ID_PERSONNEL_RESP
+            ) VALUES (
+                :in_id_hospi,
+                :in_consult,
+                :in_no_chambre,
+                :in_ts_debut_hospi,
+                :in_ts_fin_hospi,
+                :in_cout_hospi,
+                :in_personnel_resp
+            );'
+        )
+        TO OPERATOR (ol_HOSPITALISATION)
+        SELECT * FROM OPERATOR(op_HOSPITALISATION);
     );
 );
