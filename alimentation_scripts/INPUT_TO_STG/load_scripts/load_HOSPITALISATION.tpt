@@ -6,8 +6,8 @@ DESCRIPTION 'Load a Teradata table from a file'
         in_id_hospi VARCHAR(20),
         in_consult VARCHAR(20),
         in_no_chambre VARCHAR(20),
-        in_ts_debut_hospi VARCHAR(20),
-        in_ts_fin_hospi VARCHAR(20),
+        in_ts_debut_hospi VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
+        in_ts_fin_hospi VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
         in_cout_hospi VARCHAR(20),
         in_personnel_resp VARCHAR(20)
     );
