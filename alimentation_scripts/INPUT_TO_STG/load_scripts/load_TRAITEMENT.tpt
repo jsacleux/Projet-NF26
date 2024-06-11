@@ -42,7 +42,7 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.TRAITEMENT (
-                ID_TRAINTEMENT,
+                ID_TRAITEMENT,
                 CD_MEDICAMENT,
                 CATG_MEDICAMENT,
                 MARQUE_FABRI,
