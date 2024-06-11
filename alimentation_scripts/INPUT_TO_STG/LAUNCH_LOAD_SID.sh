@@ -2,9 +2,9 @@
 
 # Variables
 LOGFILE="LAUNCH_LOAD_SID.log"
-DATA_HOSPITAL_DIR="/root/Data_Hospital"
+DATA_HOSPITAL_DIR="/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital"
 DOSSIER_LOAD="load_scripts"
-DROP_SCRIPT="/root/NF26_PROJECT/installation_scripts/tables_creation_scripts/STG_tables_creation.sql"
+DROP_SCRIPT="/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/STG_tables_creation.sql"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Test du nombre d'arguments
@@ -17,8 +17,8 @@ fi;
 # Premier argument : dossier vers une base de données contenant les données pour une journée
 BDD_HOSPITAL_DIR=$1
 
-if ! [ -e "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR" ]; then
-		echo "- $0 : fichier inexistant ($DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR)"
+if ! [ -d "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR" ]; then
+		echo "- $0 : dossier inexistant ($DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR)"
 		exit
 fi;
 # Function to extract date from directory name
