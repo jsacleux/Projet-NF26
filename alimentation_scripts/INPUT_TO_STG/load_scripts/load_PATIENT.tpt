@@ -27,7 +27,7 @@ DESCRIPTION 'Load a Teradata table from a file'
     SCHEMA SCHEMA_INPUT_PATIENT
     ATTRIBUTES
     (
-        VARCHAR DirectoryPath = '/root/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
+        VARCHAR DirectoryPath = '/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital/BDD_HOSPITAL_' || @DATE || '/',
         VARCHAR FileName = 'PATIENT_' || @DATE || '.txt',
         VARCHAR Format = 'Delimited',
         VARCHAR OpenMode = 'Read',
