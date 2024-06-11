@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Variables
+LOGFILE="insert_work_to_soc.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
-SCRIPTS_DB_CREATION=(
+SCRIPTS_DB_COMPLETION=(
     "chambre.sql"
 )
 
@@ -25,7 +26,7 @@ EOF
 }
 
 # Exécuter chaque script SQL pour la création de bases de données
-for script in "${SCRIPTS_DB_CREATION[@]}"; do
+for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
     run_sql_script $script
 done
 
