@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Variables
+LOGFILE="insert_staging_to_work.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
-
-SCRIPTS_DB_CREATION=(
-    "chambre.sql"
+SCRIPTS_STG_TO_WRK=(
+    "/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/WRK_tables_creation.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work.sql"
 )
 
 # Fonction pour exécuter un script SQL avec BTEQ
@@ -25,7 +26,7 @@ EOF
 }
 
 # Exécuter chaque script SQL pour la création de bases de données
-for script in "${SCRIPTS_DB_CREATION[@]}"; do
+for script in "${SCRIPTS_STG_TO_WRK[@]}"; do
     run_sql_script $script
 done
 
