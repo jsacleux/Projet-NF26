@@ -10,7 +10,7 @@ DESCRIPTION 'Load a Teradata table from a file'
         in_ts_debut_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
         in_ts_fin_activite VARDATE(20) FORMATIN ('YYYY-MM-DD HH:MI:SS') FORMATOUT ('YYYY-MM-DD HH:MI:SS'),
         in_raison_fin_activite VARCHAR(100),
-        in_ts_creation_personnel VARCHAR(20),
+        in_ts_creation_personnel VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD'),
         in_ts_maj_personnel VARDATE(10) FORMATIN ('YYYY-MM-DD') FORMATOUT ('YYYY-MM-DD'),
         in_cd_statut_personnel VARCHAR(20)
     );
