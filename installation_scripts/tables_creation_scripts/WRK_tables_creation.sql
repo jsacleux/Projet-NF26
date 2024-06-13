@@ -218,7 +218,7 @@ CREATE SET TABLE WRK.WRK_RPART (
 SELECT * FROM dbc.tables where tablename='WRK_STAFF';
 
 -- Suppression de la table rpart si elle existe
-.IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_RPART;
+.IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_STAFF;
 DROP TABLE WRK.WRK_STAFF;
 
 -- Creation de la table STAFF
