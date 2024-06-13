@@ -6,7 +6,9 @@ BTEQ="/opt/teradata/client/17.00/bin/bteq"
 EXEC_ID_TEST='12345'
 
 SCRIPTS_DB_COMPLETION=(
-    "consultation.sql",
+    "init_suivi_tch.sql"
+    "chambre.sql"
+    "end_suivi_tch.sql"
 )
 
 # Fonction pour exécuter un script SQL avec BTEQ
