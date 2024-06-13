@@ -1,6 +1,5 @@
 LOGON localhost/dbc,dbc;
 
-
 UPDATE SOC.R_ROOM
 FROM WRK.WRK_CHAMBRE
 SET
