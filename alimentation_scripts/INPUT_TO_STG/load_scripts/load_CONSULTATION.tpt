@@ -47,19 +47,19 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.CONSULTATION (
-                ID_CONSULT,
-                ID_PERSONNEL,
-                ID_PATIENT,
-                TS_DEBUT_CONSULT,
-                TS_FIN_CONSULT,
-                POIDS_PATIENT,
-                TEMP_PATIENT,
-                UNIT_TEMP,
-                TENSION_PATIENT, 
-                DSC_PATHO,
-                INDIC_DIABETE,
-                ID_TRAITEMENT,
-                INDIC_HOSPI
+                ID_CONSULT BIGINT,
+                ID_PERSONNEL INTEGER,
+                ID_PATIENT INTEGER,
+                TS_DEBUT_CONSULT TIMESTAMP(0),
+                TS_FIN_CONSULT TIMESTAMP(0),
+                POIDS_PATIENT INTEGER,
+                TEMP_PATIENT INTEGER,
+                UNIT_TEMP VARCHAR(15),
+                TENSION_PATIENT INTEGER, 
+                DSC_PATHO VARCHAR(250),
+                INDIC_DIABETE VARCHAR(10),
+                ID_TRAITEMENT BIGINT,
+                INDIC_HOSPI VARCHAR(10)
             ) VALUES (
                 :in_id_consult,
                 :in_id_personnel,

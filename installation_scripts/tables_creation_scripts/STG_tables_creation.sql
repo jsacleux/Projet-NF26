@@ -13,6 +13,7 @@ DROP TABLE STG.CHAMBRE;
 .LABEL LABEL_SKIP_DELETE_CHAMBRE
 
 -- Suppression des tables Chambre RL, ET et UV 
+-- pas sensé les faire (script TPT)
 
 SELECT * FROM dbc.tables where tablename='CHAMBRE_RL';
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CHAMBRE_RL;
@@ -31,7 +32,7 @@ DROP TABLE STG.CHAMBRE_UV;
 
 -- Creation de la table Chambre
 
-CREATE SET TABLE STG.CHAMBRE (
+CREATE MULTISET TABLE STG.CHAMBRE ( -- MULTISET ou rien (set = doublon pas authorisé)
     NO_CHAMBRE INTEGER NOT NULL PRIMARY KEY,
     NOM_CHAMBRE VARCHAR(20) NOT NULL,
     NO_ETAGE BYTEINT,
