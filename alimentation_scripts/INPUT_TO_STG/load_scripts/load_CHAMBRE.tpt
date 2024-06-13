@@ -41,13 +41,13 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.CHAMBRE (
-                NO_CHAMBRE,
-                NOM_CHAMBRE,
-                NO_ETAGE,
-                NOM_BATIMENT,
-                TYPE_CHAMBRE,
-                PRIX_JOUR,
-                DT_CREATION
+                NO_CHAMBRE INTEGER,
+                NOM_CHAMBRE VARCHAR(20),
+                NO_ETAGE BYEINT,
+                NOM_BATIMENT VARCHAR(20),
+                TYPE_CHAMBRE VARCHAR(20),
+                PRIX_JOUR SMALLINT,
+                DT_CREATION DATE 
             ) VALUES (
                 :in_no_chambre,
                 :in_nom_chambre,
@@ -62,3 +62,4 @@ DESCRIPTION 'Load a Teradata table from a file'
         SELECT * FROM OPERATOR(op_CHAMBRE);
     );
 );
+

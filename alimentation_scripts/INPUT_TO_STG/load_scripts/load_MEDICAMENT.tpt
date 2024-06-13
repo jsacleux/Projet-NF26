@@ -39,11 +39,11 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.MEDICAMENT (
-                CD_MEDICAMENT,
-                NOM_MEDICAMENT,
-                CONDIT_MEDICAMENT,
-                CATG_MEDICAMENT,
-                MARQUE_FABRI
+                CD_MEDICAMENT VARCHAR(10),
+                NOM_MEDICAMENT VARCHAR(250),
+                CONDIT_MEDICAMENT VARCHAR(100),
+                CATG_MEDICAMENT VARCHAR(100),
+                MARQUE_FABRI VARCHAR(100)
             ) VALUES (
                 :in_cd_medicament,
                 :in_nom_medicament,

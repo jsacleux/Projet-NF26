@@ -44,16 +44,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.PERSONNEL (
-                ID_PERSONNEL,
-                NOM_PERSONNEL,
-                PRENOM_PERSONNEL,
-                FONCTION_PERSONNEL,
-                TS_DEBUT_ACTIVITE,
-                TS_FIN_ACTIVITE,
-                RAISON_FIN_ACTIVITE,
-                TS_CREATION_PERSONNEL,
-                TS_MAJ_PERSONNEL,
-                CD_STATUT_PERSONNEL
+                ID_PERSONNEL INTEGER,
+                NOM_PERSONNEL VARCHAR(100),
+                PRENOM_PERSONNEL VARCHAR(100),
+                FONCTION_PERSONNEL VARCHAR(50),
+                TS_DEBUT_ACTIVITE TIMESTAMP(0),
+                TS_FIN_ACTIVITE TIMESTAMP(0),
+                RAISON_FIN_ACTIVITE VARCHAR(100),
+                TS_CREATION_PERSONNEL TIMESTAMP(0),
+                TS_MAJ_PERSONNEL TIMESTAMP(0),
+                CD_STATUT_PERSONNEL VARCHAR(10)
             ) VALUES (
                 :in_id_personnel,
                 :in_nom_personnel,

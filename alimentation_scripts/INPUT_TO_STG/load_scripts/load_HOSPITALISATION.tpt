@@ -41,13 +41,13 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.HOSPITALISATION (
-                ID_HOSPI,
-                ID_CONSULT,
-                NO_CHAMBRE,
-                TS_DEBUT_HOSPI,
-                TS_FIN_HOSPI,
-                COUT_HOSPI,
-                ID_PERSONNEL_RESP
+                ID_HOSPI BIGINT,
+                ID_CONSULT BIGINT,
+                NO_CHAMBRE SMALLINT,
+                TS_DEBUT_HOSPI TIMESTAMP(0),
+                TS_FIN_HOSPI TIMESTAMP(0),
+                COUT_HOSPI INTEGER,
+                ID_PERSONNEL_RESP INTEGER
             ) VALUES (
                 :in_id_hospi,
                 :in_consult,

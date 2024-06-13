@@ -13,6 +13,7 @@ DROP TABLE STG.CHAMBRE;
 .LABEL LABEL_SKIP_DELETE_CHAMBRE
 
 -- Suppression des tables Chambre RL, ET et UV 
+-- pas sensé les faire (script TPT)
 
 SELECT * FROM dbc.tables where tablename='CHAMBRE_RL';
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CHAMBRE_RL;

@@ -7,3 +7,5 @@ SET MEDC_ID = CD_MEDICAMENT || CATG_MEDICAMENT || MARQUE_FABRI
 
 .LOGOFF;
 .EXIT;
+-- doit être un int => row number partition by (a partir des 3 colonnes) (doit prendre la dernière val existante)
+-- sélect valeurs uniques puis ajouter le max de l'id du dernier traitement
