@@ -2,7 +2,7 @@ LOGON localhost/dbc,dbc;
 
 -- Initialisation suivi TCH
 INSERT INTO TCH.T_SUIVI_TRMT(RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
-VALUES((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'chambre.sql', NOW(), 'Running');
+VALUES((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'work_to_soc_chambre.sql', NOW(), 'Running');
 
 CREATE VOLATILE TABLE CURRENT_EXEC_ID
 (
