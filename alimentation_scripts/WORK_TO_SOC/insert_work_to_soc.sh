@@ -3,7 +3,6 @@
 # Variables
 LOGFILE="insert_work_to_soc.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
-EXEC_ID_TEST='12345'
 
 SCRIPTS_DB_COMPLETION=(
     "init_suivi_tch.sql"
@@ -16,7 +15,6 @@ run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
     $BTEQ <<EOF >> $LOGFILE 2>&1
-.LOGON localhost/dbc
 
 .RUN FILE=$script;
 
