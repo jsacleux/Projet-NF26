@@ -71,7 +71,7 @@ CREATE TABLE SOC.O_STFF(
     EXEC_ID	        INTEGER NOT NULL
 ) UNIQUE PRIMARY INDEX(PART_ID);
 
-.LABEL LABEL_SKIP_CREATE_R_PART
+.LABEL LABEL_SKIP_CREATE_O_STFF
 
 -- Vérification si la table O_INDV existe dans la base SOC
 SELECT * FROM dbc.tables WHERE tablename='O_INDV' AND databasename='SOC';
