@@ -4,8 +4,6 @@
 LOGFILE="LAUNCH_LOAD_SID.log"
 DATA_HOSPITAL_DIR="/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital"
 DOSSIER_LOAD="load_scripts"
-DROP_SCRIPT="/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/STG_tables_creation.sql"
-BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Test du nombre d'arguments
 if ! [ $# -eq 1 ]; then
@@ -31,25 +29,12 @@ extract_date_from_directory() {
 # Initialize log file
 echo "Start of installation: $(date)" > $LOGFILE
 
-# Drop stg tables
-# Fonction pour exécuter un script SQL avec BTEQ
-run_sql_script() {
-    local script=$1
-    echo "Exécution de $script..." >> $LOGFILE
-    $BTEQ <<EOF >> $LOGFILE 2>&1
-.RUN FILE=$script;
-.IF ERRORCODE <> 0 THEN .QUIT 100;
-.LOGOFF;
-.EXIT;
-EOF
-
-    if [ $? -ne 0 ]; then
-        echo "Erreur lors de l'exécution de $script. Consultez le fichier de log pour plus de détails." >> $LOGFILE
-        exit 1
-    fi
-}
-
-run_sql_script $DROP_SCRIPT
+# Removing Checkpoints to avoid error if load script fails
+# Without this, the drop tables are not run each time and 
+# load script will fail when it is launched again with table
+# exists error
+echo "Removing TPT checkpoints to avoid error" >> $LOGFILE
+rm /opt/teradata/client/20.00/tbuild/checkpoint/*
 
 # Traverse subdirectories and execute TPT scripts
 for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
@@ -68,6 +53,7 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
         # Execute TPT script with dynamically set variables
         echo "Executing TPT script for table $TABLE with date $DATE" >> $LOGFILE
         echo "tbuild -f \"$TPT_SCRIPT\" -v DATE=\"$DATE\" -j \"load_${TABLE}\"" >> $LOGFILE
+
         tbuild -f "$TPT_SCRIPT" -u DATE="'$DATE'" -j "load_${TABLE}"
 
 
