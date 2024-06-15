@@ -1,5 +1,6 @@
 LOGON localhost/dbc,dbc;
 
+-- Step 1: Update existing records with new information
 UPDATE SOC.R_ROOM
 FROM WRK.WRK_CHAMBRE
 SET
@@ -12,7 +13,7 @@ SET
     EXEC_ID = 1
 WHERE R_ROOM.ROOM_NUM = WRK.WRK_CHAMBRE.NO_CHAMBRE;
 
-
+-- Step 2: Insert new records
 INSERT INTO SOC.R_ROOM (
     ROOM_NUM,
     ROOM_NAME, 
