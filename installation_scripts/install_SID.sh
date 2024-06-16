@@ -4,18 +4,17 @@
 LOGFILE="install_SID.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
-# Dossiers contenant les scripts SQL
+# Folders containing the SQL scripts for db and tables creation
 DOSSIER_DB_CREATION="bdd_creation_scripts"
 DOSSIER_TABLES_CREATION="tables_creation_scripts"
 
+# List of SQL scripts to execute
 SCRIPTS_DB_CREATION=(
     "$DOSSIER_DB_CREATION/SOC_database_creation.sql"
     "$DOSSIER_DB_CREATION/STG_database_creation.sql"
     "$DOSSIER_DB_CREATION/TCH_database_creation.sql"
     "$DOSSIER_DB_CREATION/WRK_database_creation.sql"
 )
-
-# Liste des scripts SQL à exécuter pour la création de tables
 SCRIPTS_TABLES_CREATION=(
     "$DOSSIER_TABLES_CREATION/SOC_tables_creation.sql"
     "$DOSSIER_TABLES_CREATION/STG_tables_creation.sql"
@@ -23,10 +22,10 @@ SCRIPTS_TABLES_CREATION=(
     "$DOSSIER_TABLES_CREATION/WRK_tables_creation.sql"
 )
 
-# Initialisation du fichier de log
+# Logging start of installation
 echo "Début de l'installation: $(date)" > $LOGFILE
 
-# Fonction pour exécuter un script SQL avec BTEQ
+# Function that executes an SQL script with BTEQ
 run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
@@ -43,16 +42,16 @@ EOF
     fi
 }
 
-# Exécuter chaque script SQL pour la création de bases de données
+# Execute each SQL script for db creation
 for script in "${SCRIPTS_DB_CREATION[@]}"; do
     run_sql_script $script
 done
 
-# Exécuter chaque script SQL pour la création de tables
+# Execute each SQL script for tables creation
 for script in "${SCRIPTS_TABLES_CREATION[@]}"; do
     run_sql_script $script
 done
 
-# Fin de l'installation
+# End of installation
 echo "Installation terminée avec succès: $(date)" >> $LOGFILE
 exit 0

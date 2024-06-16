@@ -5,20 +5,21 @@ LOGFILE="LAUNCH_LOAD_SID.log"
 DATA_HOSPITAL_DIR="/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital"
 DOSSIER_LOAD="load_scripts"
 
-# Test du nombre d'arguments
+# Check number of arguments
 if ! [ $# -eq 1 ]; then
 		echo "- $0 : argument manquant"
 		echo "  usage : ./LAUCH_LOAD_SID.sh BDD_directory"
 		exit
 fi;
 
-# Premier argument : dossier vers une base de données contenant les données pour une journée
+# First argument : folder containing data for a day
 BDD_HOSPITAL_DIR=$1
 
 if ! [ -d "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR" ]; then
 		echo "- $0 : dossier inexistant ($DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR)"
 		exit
 fi;
+
 # Function to extract date from directory name
 extract_date_from_directory() {
     dirname="$1"

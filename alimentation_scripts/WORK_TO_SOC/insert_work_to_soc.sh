@@ -4,6 +4,7 @@
 LOGFILE="insert_work_to_soc.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
+# Scripts for SOC tables alimentation
 SCRIPTS_DB_COMPLETION=(
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/init_suivi_tch.sql"
     # "work_to_soc_adresse.sql"
@@ -19,7 +20,7 @@ SCRIPTS_DB_COMPLETION=(
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
 )
 
-# Fonction pour exécuter un script SQL avec BTEQ
+# Function that executes an SQL script with BTEQ
 run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
@@ -43,11 +44,11 @@ EOF
     fi
 }
 
-# Exécuter chaque script SQL pour la création de bases de données
+# Exectute each SQL script for SOC tables alimentation
 for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
     run_sql_script $script
 done
 
-# Fin de l'installation
+# End of installation
 echo "Installation terminée avec succès: $(date)" >> $LOGFILE
 exit 0

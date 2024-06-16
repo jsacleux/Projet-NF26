@@ -3,6 +3,8 @@
 # Variables
 LOGFILE="insert_staging_to_work.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
+
+# Scripts for work tables alimentation
 SCRIPTS_STG_TO_WRK=(
     "/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/WRK_tables_creation.sql"
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/init_suivi_tch.sql"
@@ -19,7 +21,7 @@ SCRIPTS_STG_TO_WRK=(
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
 )
 
-# Fonction pour exécuter un script SQL avec BTEQ
+# Function that executes an SQL script with BTEQ
 run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
@@ -40,11 +42,11 @@ EOF
     fi
 }
 
-# Exécuter chaque script SQL pour la création de bases de données
+# Execute each SQL script
 for script in "${SCRIPTS_STG_TO_WRK[@]}"; do
     run_sql_script $script
 done
 
-# Fin de l'installation
+# End of installation
 echo "Installation terminée avec succès: $(date)" >> $LOGFILE
 exit 0
