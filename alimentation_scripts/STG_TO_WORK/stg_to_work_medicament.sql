@@ -36,7 +36,7 @@ FROM (
         NOM_MEDICAMENT,
         CONDIT_MEDICAMENT,
         CATG_MEDICAMENT,
-        MARQUE_FABRI,
+        MARQUE_FABRI
     FROM STG.MEDICAMENT
 ) sous_requête;
 

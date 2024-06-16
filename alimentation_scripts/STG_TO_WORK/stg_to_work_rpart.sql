@@ -26,7 +26,7 @@ SELECT
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
 FROM (
     SELECT
-        ID_PATIENT,
+        ID_PATIENT
     FROM STG.PATIENT
 ) sous_requête ;
 
@@ -47,7 +47,7 @@ FROM (
     SELECT
         PART_ID,
         INDIVIDU_ID,
-        FONCTION_INDIVIDU,
+        FONCTION_INDIVIDU
     FROM STG.PERSONNEL
 ) sous_requête ;
 

@@ -42,7 +42,7 @@ FROM (
         PRENOM_PERSONNEL,
         CD_STATUT_PERSONNEL,
         TS_CREATION_PERSONNEL,
-        TS_MAJ_PERSONNEL,
+        TS_MAJ_PERSONNEL
     FROM STG.PERSONNEL
 ) sous_requête;
 
@@ -86,7 +86,7 @@ FROM (
         DT_NAISS,
         VILLE_NAISS,
         PAYS_NAISS,
-        NUM_SECU,
+        NUM_SECU
     FROM STG.PATIENT
 ) sous_requête;
 
