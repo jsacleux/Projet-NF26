@@ -45,9 +45,8 @@ SELECT
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
 FROM (
     SELECT
-        PART_ID,
-        INDIVIDU_ID,
-        FONCTION_INDIVIDU
+        ID_PERSONNEL,
+        FONCTION_PERSONNEL
     FROM STG.PERSONNEL
 ) sous_requête ;
 
