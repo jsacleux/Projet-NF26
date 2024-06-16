@@ -29,17 +29,14 @@ SELECT
     TS_DEBUT_ACTIVITE,
     TS_FIN_ACTIVITE,
     RAISON_FIN_ACTIVITE,
-    current_exec_id
+    (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
 FROM (
     SELECT
-        ROW_NUMBER() OVER (PARTITION BY FONCTION_PERSONNEL ORDER BY ID_PERSONNEL) AS Numéro_Dans_Partition,
         ID_PERSONNEL,
         FONCTION_PERSONNEL,
         TS_DEBUT_ACTIVITE,
         TS_FIN_ACTIVITE,
-        RAISON_FIN_ACTIVITE,
-        (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
-        
+        RAISON_FIN_ACTIVITE
     FROM STG.PERSONNEL
 ) sous_requête;
 
