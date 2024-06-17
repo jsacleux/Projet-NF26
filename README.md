@@ -13,7 +13,7 @@ Le groupe est constitué de Juliette Sacleux, Nesrine Serradj, Eliott Sebbagh, L
 ## To Do
 - [X] Mettre tous les commentaires soit en français soit en anglais (scripts sh notamment)
 - [X] Voir commentaire Miguel sur traitement.sql dans WORK (alimentation)
-- [ ] formater les scripts sql pour qu'ils aient la même présentation et mettre un petit commentaire par requête SQL quand ce n'est pas fait
+- [X] formater les scripts sql pour qu'ils aient la même présentation et mettre un petit commentaire par requête SQL quand ce n'est pas fait
 - [ ] tester pour tous les jours (test uniquement pour le premier jour chez moi pour le moment)
 - [ ] faire slides soutenance
 - [ ] si temps faire powerbi
