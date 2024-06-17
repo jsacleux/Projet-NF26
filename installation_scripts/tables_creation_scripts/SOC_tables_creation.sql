@@ -156,9 +156,9 @@ CREATE TABLE SOC.O_CONS(
     TEMP_UNIT       VARCHAR(15),
     BLD_PRSS        INTEGER,
     PATH_DSC        VARCHAR(250),
-    DIBT_IND        VARCHAR(10),
+    DIBT_IND        INTEGER, -- BOOLEAN 0 or 1 
     TRET_ID         BIGINT,
-    HOSP_IND        VARCHAR(10),
+    HOSP_IND        INTEGER, -- BOOLEAN 0 or 1 
     EXEC_ID         INTEGER NOT NULL
 ) PRIMARY INDEX (PATN_ID);
 
