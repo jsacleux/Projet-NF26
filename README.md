@@ -11,7 +11,8 @@ Le groupe est constitué de Juliette Sacleux, Nesrine Serradj, Eliott Sebbagh, L
 [Suivi de projet Jira](https://nf26groupe2.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog)
 
 ## To Do
-- [ ] Mettre tous les commentaires soit en français soit en anglais (scripts sh notamment)
+- [X] Mettre tous les commentaires soit en français soit en anglais (scripts sh notamment)
+- [ ] Voir commentaire Miguel sur traitement.sql dans WORK (alimentation)
 - [ ] formater les scripts sql pour qu'ils aient la même présentation et mettre un petit commentaire par requête SQL quand ce n'est pas fait
 - [ ] tester pour tous les jours (test uniquement pour le premier jour chez moi pour le moment)
 - [ ] faire slides soutenance
