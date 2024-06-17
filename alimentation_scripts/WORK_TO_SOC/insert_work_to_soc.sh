@@ -11,7 +11,7 @@ SCRIPTS_DB_COMPLETION=(
     "end_suivi_tch.sql"
 )
 
-# Fonction pour exécuter un script SQL avec BTEQ
+# Function to execute sql script using BTEQ
 run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
@@ -32,11 +32,11 @@ EOF
     fi
 }
 
-# Exécuter chaque script SQL pour la création de bases de données
+# Execute each sql script for database creation
 for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
     run_sql_script $script
 done
 
-# Fin de l'installation
+# End of installation
 echo "Installation terminée avec succès: $(date)" >> $LOGFILE
 exit 0

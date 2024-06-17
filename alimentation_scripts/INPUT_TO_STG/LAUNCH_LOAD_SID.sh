@@ -7,14 +7,14 @@ DOSSIER_LOAD="load_scripts"
 DROP_SCRIPT="/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/STG_tables_creation.sql"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
-# Test du nombre d'arguments
+# Test number of arguments
 if ! [ $# -eq 1 ]; then
 		echo "- $0 : argument manquant"
 		echo "  usage : ./LAUCH_LOAD_SID.sh BDD_directory"
 		exit
 fi;
 
-# Premier argument : dossier vers une base de données contenant les données pour une journée
+# 1st argument : directory of the database to load
 BDD_HOSPITAL_DIR=$1
 
 if ! [ -d "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR" ]; then
@@ -32,7 +32,7 @@ extract_date_from_directory() {
 echo "Start of installation: $(date)" > $LOGFILE
 
 # Drop stg tables
-# Fonction pour exécuter un script SQL avec BTEQ
+# Function to execute sql script using BTEQ
 run_sql_script() {
     local script=$1
     echo "Exécution de $script..." >> $LOGFILE
@@ -51,7 +51,7 @@ EOF
 
 run_sql_script $DROP_SCRIPT
 
-# Traverse subdirectories and execute TPT scripts
+# Go through subdirectories and execute TPT scripts
 for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
     echo ${subdir}
     # Extract the date from the subdirectory name
