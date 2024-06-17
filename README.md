@@ -25,6 +25,8 @@ Sur le work to soc (cf excel)
 - [X] consultation on doit remplacer les TRUE par 1 et les FALSE par 0 pour le diabète et l'hospitalisation, cf excel, à faire dans le work)
 - [ ] les autres sont à tester, je ne l'ai pas encore fait, mais attention à bien reprendre le excel hopital mapping colonne règle de gestion
 Attention, pour les tables en insert, il faut supprimer leur contenu entre deux tests, sinon on insère deux fois les mêmes lignes et ça plante par contrainte d'unicité (cf consultation, hospitalisation...)
+
+- [ ] TESTER 
 ## Documentation de Terradata
 
 [BTEQ](https://docs.teradata.com/r/Enterprise_IntelliFlex_Lake_VMware/Basic-Teradata-Query-Reference-17.20/Introduction-to-BTEQ/BTEQ-Operation-in-the-Client-Server-Environment/BTEQ-Communication)
