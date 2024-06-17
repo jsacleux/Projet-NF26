@@ -1,12 +1,12 @@
 .LOGON localhost/dbc,dbc;
 
--- Verification si la base de donnees existe
+-- Check that the db exists
 SELECT * FROM DBC.Databases WHERE DatabaseName = 'TCH';
 
--- Si la base n'existe pas, la creer
+-- Check that the db exists
 .IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_DATABASE;
 
--- Creation BDD TCH
+-- Creation of the TCH DB 
 CREATE DATABASE TCH AS PERMANENT = 60e6,
 SPOOL = 120e6;
 
