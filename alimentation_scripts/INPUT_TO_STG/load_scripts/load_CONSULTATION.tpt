@@ -1,5 +1,5 @@
 DEFINE JOB load_CONSULTATION
-DESCRIPTION 'Load a Teradata table from a file'
+DESCRIPTION 'Importation de Consultation.txt dans une table Teradata'
 (
     DEFINE SCHEMA SCHEMA_INPUT_CONSULTATION
     (
@@ -31,6 +31,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         INTEGER SkipRows = 1
     );
 
+    DEFINE OPERATOR od_CONSULTATION
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
     DEFINE OPERATOR ol_CONSULTATION
     TYPE LOAD
     SCHEMA *
@@ -39,20 +49,24 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_CONSULTATION',
+        VARCHAR ErrorTable1 = 'STG.error_CONSULTATION',
         VARCHAR TargetTable = 'STG.CONSULTATION'
     );
 
-    STEP stLOAD_FILE
+    STEP stSetup_Tables
     (
-        APPLY
-        (
-            'INSERT INTO STG.CONSULTATION (
-                ID_CONSULT BIGINT,
-                ID_PERSONNEL INTEGER,
-                ID_PATIENT INTEGER,
-                TS_DEBUT_CONSULT TIMESTAMP(0),
-                TS_FIN_CONSULT TIMESTAMP(0),
-                POIDS_PATIENT INTEGER,
+    APPLY
+        ('DROP TABLE STG.log_CONSULTATION;'),
+        ('DROP TABLE STG.error_CONSULTATION;'),
+        ('DROP TABLE STG.CONSULTATION;'),
+        ('CREATE TABLE STG.CONSULTATION (
+                ID_CONSULT BIGINT UNIQUE NOT NULL,
+                ID_PERSONNEL INTEGER NOT NULL,
+                ID_PATIENT INTEGER NOT NULL,
+                TS_DEBUT_CONSULT TIMESTAMP(0) NOT NULL,
+                TS_FIN_CONSULT TIMESTAMP(0) NOT NULL,
+                POIDS_PATIENT INTEGER NOT NULL,
                 TEMP_PATIENT INTEGER,
                 UNIT_TEMP VARCHAR(15),
                 TENSION_PATIENT INTEGER, 
@@ -60,6 +74,29 @@ DESCRIPTION 'Load a Teradata table from a file'
                 INDIC_DIABETE VARCHAR(10),
                 ID_TRAITEMENT BIGINT,
                 INDIC_HOSPI VARCHAR(10)
+            );
+        ')
+    TO OPERATOR (od_CONSULTATION);
+    );
+
+    STEP stLOAD_FILE
+    (
+        APPLY
+        (
+            'INSERT INTO STG.CONSULTATION (
+                ID_CONSULT,
+                ID_PERSONNEL,
+                ID_PATIENT,
+                TS_DEBUT_CONSULT,
+                TS_FIN_CONSULT,
+                POIDS_PATIENT,
+                TEMP_PATIENT,
+                UNIT_TEMP,
+                TENSION_PATIENT, 
+                DSC_PATHO,
+                INDIC_DIABETE,
+                ID_TRAITEMENT,
+                INDIC_HOSPI
             ) VALUES (
                 :in_id_consult,
                 :in_id_personnel,

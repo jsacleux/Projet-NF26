@@ -1,5 +1,5 @@
 DEFINE JOB load_MEDICAMENT
-DESCRIPTION 'Load a Teradata table from a file'
+DESCRIPTION 'Importation de Medicament.txt dans une table Teradata'
 (
     DEFINE SCHEMA SCHEMA_INPUT_MEDICAMENT
     (
@@ -23,6 +23,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         INTEGER SkipRows = 1
     );
 
+    DEFINE OPERATOR od_MEDICAMENT
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
     DEFINE OPERATOR ol_MEDICAMENT
     TYPE LOAD
     SCHEMA *
@@ -31,7 +41,26 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_MEDICAMENT',
+        VARCHAR ErrorTable1 = 'STG.error_MEDICAMENT',
         VARCHAR TargetTable = 'STG.MEDICAMENT'
+    );
+
+    STEP stSetup_Tables
+    (
+    APPLY
+        ('DROP TABLE STG.log_MEDICAMENT;'),
+        ('DROP TABLE STG.error_MEDICAMENT;'),
+        ('DROP TABLE STG.MEDICAMENT;'),
+        ('CREATE TABLE STG.MEDICAMENT (
+                CD_MEDICAMENT VARCHAR(10) UNIQUE NOT NULL,
+                NOM_MEDICAMENT VARCHAR(250),
+                CONDIT_MEDICAMENT VARCHAR(100),
+                CATG_MEDICAMENT VARCHAR(100) NOT NULL,
+                MARQUE_FABRI VARCHAR(100) NOT NULL
+            );
+        ')
+    TO OPERATOR (od_MEDICAMENT);
     );
 
     STEP stLOAD_FILE
@@ -39,11 +68,11 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.MEDICAMENT (
-                CD_MEDICAMENT VARCHAR(10),
-                NOM_MEDICAMENT VARCHAR(250),
-                CONDIT_MEDICAMENT VARCHAR(100),
-                CATG_MEDICAMENT VARCHAR(100),
-                MARQUE_FABRI VARCHAR(100)
+                CD_MEDICAMENT,
+                NOM_MEDICAMENT,
+                CONDIT_MEDICAMENT,
+                CATG_MEDICAMENT,
+                MARQUE_FABRI
             ) VALUES (
                 :in_cd_medicament,
                 :in_nom_medicament,

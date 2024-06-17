@@ -1,5 +1,5 @@
 DEFINE JOB load_PATIENT
-DESCRIPTION 'Load a Teradata table from a file'
+DESCRIPTION 'Importation de Patient.txt dans une table Teradata'
 (
     DEFINE SCHEMA SCHEMA_INPUT_PATIENT
     (
@@ -35,6 +35,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         INTEGER SkipRows = 1
     );
 
+    DEFINE OPERATOR od_PATIENT
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
     DEFINE OPERATOR ol_PATIENT
     TYPE LOAD
     SCHEMA *
@@ -43,17 +53,21 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_PATIENT',
+        VARCHAR ErrorTable1 = 'STG.error_PATIENT',
         VARCHAR TargetTable = 'STG.PATIENT'
     );
 
-    STEP stLOAD_FILE
+    STEP stSetup_Tables
     (
-        APPLY
-        (
-            'INSERT INTO STG.PATIENT (
-                ID_PATIENT INTEGER,
-                NOM_PATIENT VARCHAR(100),
-                PRENOM_PATIENT VARCHAR(100),
+    APPLY
+        ('DROP TABLE STG.log_PATIENT;'),
+        ('DROP TABLE STG.error_PATIENT;'),
+        ('DROP TABLE STG.PATIENT;'),
+        ('CREATE TABLE STG.PATIENT (
+                ID_PATIENT INTEGER UNIQUE NOT NULL,
+                NOM_PATIENT VARCHAR(100) NOT NULL,
+                PRENOM_PATIENT VARCHAR(100) NOT NULL,
                 DT_NAISS DATE,
                 VILLE_NAISS VARCHAR(100),
                 PAYS_NAISS VARCHAR(100),
@@ -66,8 +80,35 @@ DESCRIPTION 'Load a Teradata table from a file'
                 CD_POSTAL VARCHAR(10),
                 VILLE VARCHAR(100),
                 PAYS VARCHAR(100),
-                TS_CREATION_PATIENT TIMESTAMP(0),
-                TS_MAJ_PERSONNEL TIMESTAMP(0)
+                TS_CREATION_PATIENT TIMESTAMP(0) NOT NULL,
+                TS_MAJ_PERSONNEL TIMESTAMP(0) NOT NULL
+            );
+        ')
+    TO OPERATOR (od_PATIENT);
+    );
+    
+    STEP stLOAD_FILE
+    (
+        APPLY
+        (
+            'INSERT INTO STG.PATIENT (
+                ID_PATIENT,
+                NOM_PATIENT,
+                PRENOM_PATIENT,
+                DT_NAISS,
+                VILLE_NAISS,
+                PAYS_NAISS,
+                NUM_SECU,
+                IND_PAYS_NUM_TELP,
+                NUM_TELEPHONE,
+                NUM_VOIE,
+                DSC_VOIE,
+                CMPL_VOIE,
+                CD_POSTAL,
+                VILLE,
+                PAYS,
+                TS_CREATION_PATIENT,
+                TS_MAJ_PERSONNEL
             ) VALUES (
                 :in_id_patient,
                 :in_nom_patient,

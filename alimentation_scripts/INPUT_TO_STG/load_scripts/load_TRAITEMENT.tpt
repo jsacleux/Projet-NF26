@@ -1,5 +1,5 @@
 DEFINE JOB load_TRAITEMENT
-DESCRIPTION 'Load a Teradata table from a file'
+DESCRIPTION 'Importation de Traitement.txt dans une table Teradata'
 (
     DEFINE SCHEMA SCHEMA_INPUT_TRAITEMENT
     (
@@ -26,6 +26,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         INTEGER SkipRows = 1
     );
 
+    DEFINE OPERATOR od_TRAITEMENT
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
     DEFINE OPERATOR ol_TRAITEMENT
     TYPE LOAD
     SCHEMA *
@@ -34,7 +44,29 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_TRAITEMENT',
+        VARCHAR ErrorTable1 = 'STG.error_TRAITEMENT',
         VARCHAR TargetTable = 'STG.TRAITEMENT'
+    );
+
+    STEP stSetup_Tables
+    (
+    APPLY
+        ('DROP TABLE STG.log_TRAITEMENT;'),
+        ('DROP TABLE STG.error_TRAITEMENT;'),
+        ('DROP TABLE STG.TRAITEMENT;'),
+        ('CREATE TABLE STG.TRAITEMENT (
+                ID_TRAITEMENT BIGINT UNIQUE NOT NULL,
+                CD_MEDICAMENT INTEGER NOT NULL,
+                CATG_MEDICAMENT VARCHAR(100) NOT NULL,
+                MARQUE_FABRI VARCHAR(100) NOT NULL,
+                QTE_MEDICAMENT SMALLINT,
+                DSC_POSOLOGIE VARCHAR(100) NOT NULL,
+                ID_CONSULT BIGINT NOT NULL,
+                TS_CREATION_TRAITEMENT TIMESTAMP(0) NOT NULL
+            );
+        ')
+    TO OPERATOR (od_TRAITEMENT);
     );
 
     STEP stLOAD_FILE
@@ -42,14 +74,14 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.TRAITEMENT (
-                ID_TRAITEMENT BIGINT,
-                CD_MEDICAMENT INTEGER,
-                CATG_MEDICAMENT VARCHAR(100),
-                MARQUE_FABRI VARCHAR(100),
-                QTE_MEDICAMENT SMALLINT,
-                DSC_POSOLOGIE VARCHAR(100),
-                ID_CONSULT BIGINT,
-                TS_CREATION_TRAITEMENT TIMESTAMP(0)
+                ID_TRAITEMENT,
+                CD_MEDICAMENT,
+                CATG_MEDICAMENT,
+                MARQUE_FABRI,
+                QTE_MEDICAMENT,
+                DSC_POSOLOGIE,
+                ID_CONSULT,
+                TS_CREATION_TRAITEMENT
             ) VALUES (
                 :in_id_traitement,
                 :in_cd_medicament,

@@ -1,5 +1,5 @@
 DEFINE JOB load_HOSPITALISATION
-DESCRIPTION 'Load a Teradata table from a file'
+DESCRIPTION 'Importation de Hospitalisation.txt dans une table Teradata'
 (
     DEFINE SCHEMA SCHEMA_INPUT_HOSPITALISATION
     (
@@ -25,6 +25,16 @@ DESCRIPTION 'Load a Teradata table from a file'
         INTEGER SkipRows = 1
     );
 
+    DEFINE OPERATOR od_HOSPITALISATION
+    TYPE DDL
+    ATTRIBUTES
+    (
+        VARCHAR TdpId = '127.0.0.1',
+        VARCHAR UserName = 'dbc',
+        VARCHAR UserPassword = 'dbc',
+        VARCHAR ErrorList = '3807'
+    );
+
     DEFINE OPERATOR ol_HOSPITALISATION
     TYPE LOAD
     SCHEMA *
@@ -33,7 +43,28 @@ DESCRIPTION 'Load a Teradata table from a file'
         VARCHAR TdpId = '127.0.0.1',
         VARCHAR UserName = 'dbc',
         VARCHAR UserPassword = 'dbc',
+        VARCHAR LogTable = 'STG.log_HOSPITALISATION',
+        VARCHAR ErrorTable1 = 'STG.error_HOSPITALISATION',
         VARCHAR TargetTable = 'STG.HOSPITALISATION'
+    );
+
+    STEP stSetup_Tables
+    (
+    APPLY
+        ('DROP TABLE STG.log_HOSPITALISATION;'),
+        ('DROP TABLE STG.error_HOSPITALISATION;'),
+        ('DROP TABLE STG.HOSPITALISATION;'),
+        ('CREATE TABLE STG.HOSPITALISATION (
+                ID_HOSPI BIGINT UNIQUE NOT NULL,
+                ID_CONSULT BIGINT NOT NULL,
+                NO_CHAMBRE SMALLINT NOT NULL,
+                TS_DEBUT_HOSPI TIMESTAMP(0) NOT NULL,
+                TS_FIN_HOSPI TIMESTAMP(0),
+                COUT_HOSPI INTEGER,
+                ID_PERSONNEL_RESP INTEGER NOT NULL
+            );
+        ')
+    TO OPERATOR (od_HOSPITALISATION);
     );
 
     STEP stLOAD_FILE
@@ -41,13 +72,13 @@ DESCRIPTION 'Load a Teradata table from a file'
         APPLY
         (
             'INSERT INTO STG.HOSPITALISATION (
-                ID_HOSPI BIGINT,
-                ID_CONSULT BIGINT,
-                NO_CHAMBRE SMALLINT,
-                TS_DEBUT_HOSPI TIMESTAMP(0),
-                TS_FIN_HOSPI TIMESTAMP(0),
-                COUT_HOSPI INTEGER,
-                ID_PERSONNEL_RESP INTEGER
+                ID_HOSPI,
+                ID_CONSULT,
+                NO_CHAMBRE,
+                TS_DEBUT_HOSPI,
+                TS_FIN_HOSPI,
+                COUT_HOSPI,
+                ID_PERSONNEL_RESP
             ) VALUES (
                 :in_id_hospi,
                 :in_consult,

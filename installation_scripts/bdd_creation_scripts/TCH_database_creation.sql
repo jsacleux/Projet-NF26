@@ -12,7 +12,7 @@ SPOOL = 120e6;
 
 .LABEL LABEL_SKIP_CREATE_DATABASE
 
--- Fermeture 
+-- Closing 
 .LOGOFF;
 .EXIT;
 
