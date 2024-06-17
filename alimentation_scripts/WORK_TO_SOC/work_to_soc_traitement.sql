@@ -12,6 +12,7 @@ ON COMMIT PRESERVE ROWS;
 
 INSERT INTO CURRENT_EXEC_ID(current_exec_id) SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
 
+-- Step 1: Update existing records with new information
 UPDATE SOC.O_TRET
 FROM WRK.WRK_TRAITEMENT
 SET
@@ -23,6 +24,9 @@ SET
     EXEC_ID =  (SELECT current_exec_id FROM CURRENT_EXEC_ID)
 WHERE O_TRET.TRET_ID = WRK.WRK_TRAITEMENT.ID_TRAITEMENT;
 
+.IF ERRORCODE <> 0 THEN .QUIT 100;
+
+-- Step 2: Insert new records from the source table
 INSERT INTO SOC.O_TRET (
     TRET_ID,
     MEDC_ID,
@@ -32,7 +36,6 @@ INSERT INTO SOC.O_TRET (
     TRET_CRTN_DTTM,
     EXEC_ID
 )
-
 SELECT
     ID_TRAITEMENT,
     MEDC_ID,
