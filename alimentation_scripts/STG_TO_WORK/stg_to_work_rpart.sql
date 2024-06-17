@@ -1,38 +1,37 @@
 LOGON localhost/dbc,dbc;
 
--- Initialisation suivi TCH
-INSERT INTO TCH.T_SUIVI_TRMT(RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
-VALUES((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_rpart.sql', NOW(), 'Running');
+-- Initialization of TCH.T_SUIVI_TRMT table
+INSERT INTO TCH.T_SUIVI_TRMT (RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
+VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_rpart.sql', NOW(), 'Running');
 
-CREATE VOLATILE TABLE CURRENT_EXEC_ID
-(
-current_exec_id int
+-- Create a volatile table to store the current EXEC_ID
+CREATE VOLATILE TABLE CURRENT_EXEC_ID (
+    current_exec_id INT
 ) PRIMARY INDEX (current_exec_id)
 ON COMMIT PRESERVE ROWS;
 
-INSERT INTO CURRENT_EXEC_ID(current_exec_id) SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
+-- Insert the current EXEC_ID into the volatile table
+INSERT INTO CURRENT_EXEC_ID (current_exec_id)
+SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
 
--- STG to work pour rpart
-INSERT INTO WRK.WRK_RPART(
+-- STG to work for rpart (patient)
+INSERT INTO WRK.WRK_RPART (
     PART_ID,
     INDIVIDU_ID,
     FONCTION_INDIVIDU,
     EXEC_ID
 )
 SELECT
-    ROW_NUMBER() OVER (ORDER BY ID_PATIENT) +1000000 AS PART_ID, 
-    ID_PATIENT, 
+    ROW_NUMBER() OVER (ORDER BY ID_PATIENT) + 1000000 AS PART_ID,
+    ID_PATIENT,
     'Patient' AS FONCTION_INDIVIDU,
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
-FROM (
-    SELECT
-        ID_PATIENT
-    FROM STG.PATIENT
-) sous_requête ;
+FROM STG.PATIENT;
 
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
 
-INSERT INTO WRK.WRK_RPART(
+-- STG to work for rpart (personnel)
+INSERT INTO WRK.WRK_RPART (
     PART_ID,
     INDIVIDU_ID,
     FONCTION_INDIVIDU,
@@ -43,26 +42,23 @@ SELECT
     ID_PERSONNEL,
     FONCTION_PERSONNEL,
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
-FROM (
-    SELECT
-        ID_PERSONNEL,
-        FONCTION_PERSONNEL
-    FROM STG.PERSONNEL
-) sous_requête ;
+FROM STG.PERSONNEL;
 
--- MAJ etat et date de fin du script dans suivi TCH
+-- Update TCH.T_SUIVI_TRMT with state and end date
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
 UPDATE TCH.T_SUIVI_TRMT
-SET EXEC_END_DTTM=NOW(), EXEC_STTS_CD='Success'
+SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'Success'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
-.GOTO LABEL_UPDATE_SUCCESS
+.GOTO LABEL_UPDATE_SUCCESS;
 
 .LABEL LABEL_UPDATE_WITH_ERROR
+-- Error occurred, update status to 'Error'
 UPDATE TCH.T_SUIVI_TRMT
-SET EXEC_END_DTTM=NOW(), EXEC_STTS_CD='Error'
+SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'Error'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
-.QUIT 100;
+.QUIT 100;  -- Quit with exit code 100 on error
 
 .LABEL LABEL_UPDATE_SUCCESS
+-- Success, logoff from session
 .LOGOFF;
 .EXIT;

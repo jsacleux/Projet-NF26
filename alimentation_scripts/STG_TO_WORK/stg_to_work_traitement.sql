@@ -1,19 +1,21 @@
 LOGON localhost/dbc,dbc;
 
--- Initialisation suivi TCH
-INSERT INTO TCH.T_SUIVI_TRMT(RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
-VALUES((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_traitement.sql', NOW(), 'Running');
+-- Initialization of TCH.T_SUIVI_TRMT table
+INSERT INTO TCH.T_SUIVI_TRMT (RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
+VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_traitement.sql', NOW(), 'Running');
 
-CREATE VOLATILE TABLE CURRENT_EXEC_ID
-(
-current_exec_id int
+-- Create a volatile table to store the current EXEC_ID
+CREATE VOLATILE TABLE CURRENT_EXEC_ID (
+    current_exec_id INT
 ) PRIMARY INDEX (current_exec_id)
 ON COMMIT PRESERVE ROWS;
 
-INSERT INTO CURRENT_EXEC_ID(current_exec_id) SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
+-- Insert the current EXEC_ID into the volatile table
+INSERT INTO CURRENT_EXEC_ID (current_exec_id)
+SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
 
--- STG to work pour traitement
-INSERT INTO WRK.WRK_TRAITEMENT(
+-- STG to work for traitement
+INSERT INTO WRK.WRK_TRAITEMENT (
     ID_TRAITEMENT,
     CD_MEDICAMENT,
     CATG_MEDICAMENT,
@@ -35,22 +37,27 @@ SELECT
     ID_CONSULT,
     TS_CREATION_TRAITEMENT,
     ROW_NUMBER() OVER (PARTITION BY CATG_MEDICAMENT, MARQUE_FABRI ORDER BY CD_MEDICAMENT) AS MEDC_ID,
-    (SELECT current_exec_id FROM CURRENT_EXEC_ID)
-    FROM STG.TRAITEMENT;
+    (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
+FROM STG.TRAITEMENT;
 
--- MAJ etat et date de fin du script dans suivi TCH
+-- Error handling and update TCH.T_SUIVI_TRMT with state and end date
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
+
 UPDATE TCH.T_SUIVI_TRMT
-SET EXEC_END_DTTM=NOW(), EXEC_STTS_CD='Success'
+SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'Success'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
-.GOTO LABEL_UPDATE_SUCCESS
+
+.GOTO LABEL_UPDATE_SUCCESS;
 
 .LABEL LABEL_UPDATE_WITH_ERROR
+-- Error occurred, update status to 'Error'
 UPDATE TCH.T_SUIVI_TRMT
-SET EXEC_END_DTTM=NOW(), EXEC_STTS_CD='Error'
+SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'Error'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
-.QUIT 100;
+
+.QUIT 100;  -- Quit with exit code 100 on error
 
 .LABEL LABEL_UPDATE_SUCCESS
+-- Success, logoff from session
 .LOGOFF;
 .EXIT;
