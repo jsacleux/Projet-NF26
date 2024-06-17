@@ -1,19 +1,18 @@
 .LOGON localhost/dbc,dbc;
 
--- Les tables STG sont recréées à chaque exécution
+-- STG tables are recreated each execution
 
---Table CHAMBRE
--- Verification si table Chambre existe
-SELECT * FROM dbc.tables where tablename='CHAMBRE';
+-- Table CHAMBRE
+-- Check if CHAMBRE table exists
+SELECT * FROM dbc.tables WHERE tablename='CHAMBRE';
 
--- Suppression de la table Chambre si elle existe
+-- Drop CHAMBRE table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CHAMBRE;
 DROP TABLE STG.CHAMBRE;
 
 .LABEL LABEL_SKIP_DELETE_CHAMBRE
 
--- Creation de la table Chambre
-
+-- Create CHAMBRE table
 CREATE TABLE STG.CHAMBRE (
     NO_CHAMBRE INTEGER UNIQUE NOT NULL,
     NOM_CHAMBRE VARCHAR(20) NOT NULL,
@@ -24,18 +23,17 @@ CREATE TABLE STG.CHAMBRE (
     DT_CREATION DATE NOT NULL
 );
 
---Table TRAITEMENT
--- Verification si table Traitement existe
-SELECT * FROM dbc.tables where tablename='TRAITEMENT';
+-- Table TRAITEMENT
+-- Check if TRAITEMENT table exists
+SELECT * FROM dbc.tables WHERE tablename='TRAITEMENT';
 
--- Suppression de la table Traitement si elle existe
+-- Drop TRAITEMENT table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_TRAITEMENT;
 DROP TABLE STG.TRAITEMENT;
 
 .LABEL LABEL_SKIP_DELETE_TRAITEMENT
 
--- Creation de la table Traitement
-
+-- Create TRAITEMENT table
 CREATE TABLE STG.TRAITEMENT (
     ID_TRAITEMENT BIGINT UNIQUE NOT NULL,
     CD_MEDICAMENT INTEGER NOT NULL,
@@ -47,18 +45,17 @@ CREATE TABLE STG.TRAITEMENT (
     TS_CREATION_TRAITEMENT TIMESTAMP(0) NOT NULL
 );
 
---Table PERSONNEL
--- Verification si table PERSONNEL existe
-SELECT * FROM dbc.tables where tablename='PERSONNEL';
+-- Table PERSONNEL
+-- Check if PERSONNEL table exists
+SELECT * FROM dbc.tables WHERE tablename='PERSONNEL';
 
--- Suppression de la table PERSONNEL si elle existe
+-- Drop PERSONNEL table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_PERSONNEL;
 DROP TABLE STG.PERSONNEL;
 
 .LABEL LABEL_SKIP_DELETE_PERSONNEL
 
--- Creation de la table Consultation
-
+-- Create PERSONNEL table
 CREATE TABLE STG.PERSONNEL (
     ID_PERSONNEL INTEGER UNIQUE NOT NULL,
     NOM_PERSONNEL VARCHAR(100) NOT NULL,
@@ -66,24 +63,23 @@ CREATE TABLE STG.PERSONNEL (
     FONCTION_PERSONNEL VARCHAR(50) NOT NULL,
     TS_DEBUT_ACTIVITE TIMESTAMP(0) NOT NULL,
     TS_FIN_ACTIVITE TIMESTAMP(0),
-    RAISON_FIN_ACTIVITE  VARCHAR(100),
+    RAISON_FIN_ACTIVITE VARCHAR(100),
     TS_CREATION_PERSONNEL TIMESTAMP(0) NOT NULL,
     TS_MAJ_PERSONNEL TIMESTAMP(0) NOT NULL,
-    CD_STATUT_PERSONNEL  VARCHAR(10) NOT NULL
+    CD_STATUT_PERSONNEL VARCHAR(10) NOT NULL
 );
 
---Table PATIENT
--- Verification si table PATIENT existe
-SELECT * FROM dbc.tables where tablename='PATIENT';
+-- Table PATIENT
+-- Check if PATIENT table exists
+SELECT * FROM dbc.tables WHERE tablename='PATIENT';
 
--- Suppression de la table PATIENT si elle existe
+-- Drop PATIENT table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_PATIENT;
 DROP TABLE STG.PATIENT;
 
 .LABEL LABEL_SKIP_DELETE_PATIENT
 
--- Creation de la table Patient
-
+-- Create PATIENT table
 CREATE TABLE STG.PATIENT (
     ID_PATIENT INTEGER UNIQUE NOT NULL,
     NOM_PATIENT VARCHAR(100) NOT NULL,
@@ -104,18 +100,17 @@ CREATE TABLE STG.PATIENT (
     TS_MAJ_PERSONNEL TIMESTAMP(0) NOT NULL
 );
 
---Table CONSULTATION
--- Verification si table CONSULTATION existe
-SELECT * FROM dbc.tables where tablename='CONSULTATION';
+-- Table CONSULTATION
+-- Check if CONSULTATION table exists
+SELECT * FROM dbc.tables WHERE tablename='CONSULTATION';
 
--- Suppression de la table CONSULTATION si elle existe
+-- Drop CONSULTATION table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CONSULTATION;
 DROP TABLE STG.CONSULTATION;
 
 .LABEL LABEL_SKIP_DELETE_CONSULTATION
 
--- Creation de la table Consultation
-
+-- Create CONSULTATION table
 CREATE TABLE STG.CONSULTATION (
     ID_CONSULT BIGINT UNIQUE NOT NULL,
     ID_PERSONNEL INTEGER NOT NULL,
@@ -125,25 +120,24 @@ CREATE TABLE STG.CONSULTATION (
     POIDS_PATIENT INTEGER NOT NULL,
     TEMP_PATIENT INTEGER,
     UNIT_TEMP VARCHAR(15),
-    TENSION_PATIENT INTEGER, 
+    TENSION_PATIENT INTEGER,
     DSC_PATHO VARCHAR(250),
     INDIC_DIABETE VARCHAR(10),
     ID_TRAITEMENT BIGINT,
     INDIC_HOSPI VARCHAR(10)
 );
 
---Table HOSPITALISATION
--- Verification si table HOSPITALISATION existe
-SELECT * FROM dbc.tables where tablename='HOSPITALISATION';
+-- Table HOSPITALISATION
+-- Check if HOSPITALISATION table exists
+SELECT * FROM dbc.tables WHERE tablename='HOSPITALISATION';
 
--- Suppression de la table HOSPITALISATION si elle existe
+-- Drop HOSPITALISATION table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_HOSPITALISATION;
 DROP TABLE STG.HOSPITALISATION;
 
 .LABEL LABEL_SKIP_DELETE_HOSPITALISATION
 
--- Creation de la table Hospitalisation
-
+-- Create HOSPITALISATION table
 CREATE TABLE STG.HOSPITALISATION (
     ID_HOSPI BIGINT UNIQUE NOT NULL,
     ID_CONSULT BIGINT NOT NULL,
@@ -154,19 +148,17 @@ CREATE TABLE STG.HOSPITALISATION (
     ID_PERSONNEL_RESP INTEGER NOT NULL
 );
 
---Table MEDICAMENT
--- Verification si table MEDICAMENT existe
-SELECT * FROM dbc.tables where tablename='MEDICAMENT';
+-- Table MEDICAMENT
+-- Check if MEDICAMENT table exists
+SELECT * FROM dbc.tables WHERE tablename='MEDICAMENT';
 
--- Suppression de la table MEDICAMENT si elle existe
+-- Drop MEDICAMENT table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_MEDICAMENT;
 DROP TABLE STG.MEDICAMENT;
 
 .LABEL LABEL_SKIP_DELETE_MEDICAMENT
 
-
--- Creation de la table Medicament
-
+-- Create MEDICAMENT table
 CREATE TABLE STG.MEDICAMENT (
     CD_MEDICAMENT VARCHAR(10) UNIQUE NOT NULL,
     NOM_MEDICAMENT VARCHAR(250),

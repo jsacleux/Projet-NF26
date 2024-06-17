@@ -1,18 +1,18 @@
 .LOGON localhost/dbc,dbc;
 
--- Les tables WRK sont recréées à chaque exécution
+-- WRK tables are recreated every execution
 
---Table CHAMBRE
--- Verification si table Chambre existe
-SELECT * FROM dbc.tables where tablename='WRK_CHAMBRE';
+-- Table WRK_CHAMBRE
+-- Check if WRK_CHAMBRE table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_CHAMBRE';
 
--- Suppression de la table Chambre si elle existe
+-- Drop WRK_CHAMBRE table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CHAMBRE;
 DROP TABLE WRK.WRK_CHAMBRE;
 
--- Creation de la table Chambre
 .LABEL LABEL_SKIP_DELETE_CHAMBRE
 
+-- Create WRK_CHAMBRE table
 CREATE TABLE WRK.WRK_CHAMBRE (
     NO_CHAMBRE INTEGER UNIQUE NOT NULL,
     NOM_CHAMBRE VARCHAR(20) NOT NULL,
@@ -24,18 +24,17 @@ CREATE TABLE WRK.WRK_CHAMBRE (
     EXEC_ID INTEGER NOT NULL
 );
 
+-- Table WRK_TRAITEMENT
+-- Check if WRK_TRAITEMENT table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_TRAITEMENT';
 
---Table TRAITEMENT
--- Verification si table Traitement existe
-SELECT * FROM dbc.tables where tablename='WRK_TRAITEMENT';
-
--- Suppression de la table Chambre si elle existe
+-- Drop WRK_TRAITEMENT table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_TRAITEMENT;
 DROP TABLE WRK.WRK_TRAITEMENT;
 
--- Creation de la table Traitement
 .LABEL LABEL_SKIP_DELETE_TRAITEMENT
 
+-- Create WRK_TRAITEMENT table
 CREATE TABLE WRK.WRK_TRAITEMENT (
     ID_TRAITEMENT BIGINT UNIQUE NOT NULL,
     MEDC_ID INTEGER,
@@ -49,26 +48,26 @@ CREATE TABLE WRK.WRK_TRAITEMENT (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table INDIVIDU
--- Verification si table Individu existe
-SELECT * FROM dbc.tables where tablename='WRK_INDIVIDU';
+-- Table WRK_INDIVIDU
+-- Check if WRK_INDIVIDU table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_INDIVIDU';
 
--- Suppression de la table Individu si elle existe
+-- Drop WRK_INDIVIDU table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_INDIVIDU;
 DROP TABLE WRK.WRK_INDIVIDU;
 
--- Creation de la table Individu
 .LABEL LABEL_SKIP_DELETE_INDIVIDU
 
+-- Create WRK_INDIVIDU table
 CREATE TABLE WRK.WRK_INDIVIDU (
     PART_ID INTEGER,
-    INDIVIDU_ID INTEGER UNIQUE NOT NULL, 
+    INDIVIDU_ID INTEGER UNIQUE NOT NULL,
     FONCTION_INDIVIDU VARCHAR(50),
     INDV_NAME VARCHAR(100) NOT NULL,
-    INDV_FIRS_NAME  VARCHAR(100) NOT NULL,
+    INDV_FIRS_NAME VARCHAR(100) NOT NULL,
     INDV_STTS_CD VARCHAR(10),
     TS_CREATION TIMESTAMP(0) NOT NULL,
-    TS_MAJ TIMESTAMP(0) NOT NULL, 
+    TS_MAJ TIMESTAMP(0) NOT NULL,
     DT_NAISS DATE,
     VILLE_NAISS VARCHAR(100),
     PAYS_NAISS VARCHAR(100),
@@ -76,17 +75,17 @@ CREATE TABLE WRK.WRK_INDIVIDU (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table Consultation
--- Verification si table Consultation existe
-SELECT * FROM dbc.tables where tablename='WRK_CONSULTATION';
+-- Table WRK_CONSULTATION
+-- Check if WRK_CONSULTATION table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_CONSULTATION';
 
--- Suppression de la table Individu si elle existe
+-- Drop WRK_CONSULTATION table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_CONSULTATION;
 DROP TABLE WRK.WRK_CONSULTATION;
 
--- Creation de la table Individu
 .LABEL LABEL_SKIP_DELETE_CONSULTATION
 
+-- Create WRK_CONSULTATION table
 CREATE TABLE WRK.WRK_CONSULTATION (
     ID_CONSULT BIGINT UNIQUE NOT NULL,
     ID_PERSONNEL INTEGER NOT NULL,
@@ -96,7 +95,7 @@ CREATE TABLE WRK.WRK_CONSULTATION (
     POIDS_PATIENT INTEGER NOT NULL,
     TEMP_PATIENT INTEGER,
     UNIT_TEMP VARCHAR(15),
-    TENSION_PATIENT INTEGER, 
+    TENSION_PATIENT INTEGER,
     DSC_PATHO VARCHAR(250),
     INDIC_DIABETE VARCHAR(10),
     ID_TRAITEMENT BIGINT,
@@ -104,17 +103,17 @@ CREATE TABLE WRK.WRK_CONSULTATION (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table Hospitalisation
--- Verification si table Hospitalisation existe
-SELECT * FROM dbc.tables where tablename='WRK_HOSPITALISATION';
+-- Table WRK_HOSPITALISATION
+-- Check if WRK_HOSPITALISATION table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_HOSPITALISATION';
 
--- Suppression de la table Individu si elle existe
+-- Drop WRK_HOSPITALISATION table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_HOSPITALISATION;
 DROP TABLE WRK.WRK_HOSPITALISATION;
 
--- Creation de la table Individu
 .LABEL LABEL_SKIP_DELETE_HOSPITALISATION
 
+-- Create WRK_HOSPITALISATION table
 CREATE TABLE WRK.WRK_HOSPITALISATION (
     ID_HOSPI BIGINT UNIQUE NOT NULL,
     ID_CONSULT BIGINT NOT NULL,
@@ -126,17 +125,17 @@ CREATE TABLE WRK.WRK_HOSPITALISATION (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table Medicament
--- Verification si table Medicament existe
-SELECT * FROM dbc.tables where tablename='WRK_MEDICAMENT';
+-- Table WRK_MEDICAMENT
+-- Check if WRK_MEDICAMENT table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_MEDICAMENT';
 
--- Suppression de la table Medicament si elle existe
+-- Drop WRK_MEDICAMENT table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_MEDICAMENT;
 DROP TABLE WRK.WRK_MEDICAMENT;
 
--- Creation de la table Medicament
 .LABEL LABEL_SKIP_DELETE_MEDICAMENT
 
+-- Create WRK_MEDICAMENT table
 CREATE TABLE WRK.WRK_MEDICAMENT (
     MEDC_ID INTEGER,
     CD_MEDICAMENT VARCHAR(10) UNIQUE NOT NULL,
@@ -147,20 +146,20 @@ CREATE TABLE WRK.WRK_MEDICAMENT (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table Adresse
--- Verification si table Adresse existe
-SELECT * FROM dbc.tables where tablename='WRK_ADRESSE';
+-- Table WRK_ADRESSE
+-- Check if WRK_ADRESSE table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_ADRESSE';
 
--- Suppression de la table Adresse si elle existe
+-- Drop WRK_ADRESSE table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_ADRESSE;
 DROP TABLE WRK.WRK_ADRESSE;
 
--- Creation de la table Adresse
 .LABEL LABEL_SKIP_DELETE_ADRESSE
 
+-- Create WRK_ADRESSE table
 CREATE TABLE WRK.WRK_ADRESSE (
     PART_ID INTEGER,
-    INDIVIDU_ID INTEGER UNIQUE NOT NULL, 
+    INDIVIDU_ID INTEGER UNIQUE NOT NULL,
     FONCTION_INDIVIDU VARCHAR(50),
     STRT_NUM VARCHAR(10) NOT NULL,
     STRT_DSC VARCHAR(250) NOT NULL,
@@ -173,20 +172,20 @@ CREATE TABLE WRK.WRK_ADRESSE (
     EXEC_ID INTEGER NOT NULL
 );
 
---Table TELP
--- Verification si table telp existe
-SELECT * FROM dbc.tables where tablename='WRK_TELP';
+-- Table WRK_TELP
+-- Check if WRK_TELP table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_TELP';
 
--- Suppression de la table Adresse si elle existe
+-- Drop WRK_TELP table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_TELP;
 DROP TABLE WRK.WRK_TELP;
 
--- Creation de la table Adresse
 .LABEL LABEL_SKIP_DELETE_TELP
 
+-- Create WRK_TELP table
 CREATE TABLE WRK.WRK_TELP (
     PART_ID INTEGER,
-    INDIVIDU_ID INTEGER UNIQUE NOT NULL, 
+    INDIVIDU_ID INTEGER UNIQUE NOT NULL,
     FONCTION_INDIVIDU VARCHAR(50),
     IND_PAYS_NUM_TELP VARCHAR(5),
     NUM_TELEPHONE VARCHAR(20) NOT NULL,
@@ -195,46 +194,44 @@ CREATE TABLE WRK.WRK_TELP (
     EXEC_ID INTEGER NOT NULL
 );
 
+-- Table WRK_RPART
+-- Check if WRK_RPART table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_RPART';
 
---Table RPART
--- Verification si table rpart existe
-SELECT * FROM dbc.tables where tablename='WRK_RPART';
-
--- Suppression de la table rpart si elle existe
+-- Drop WRK_RPART table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_RPART;
 DROP TABLE WRK.WRK_RPART;
 
--- Creation de la table rpart
 .LABEL LABEL_SKIP_DELETE_RPART
 
+-- Create WRK_RPART table
 CREATE TABLE WRK.WRK_RPART (
     PART_ID INTEGER,
-    INDIVIDU_ID INTEGER UNIQUE NOT NULL, 
+    INDIVIDU_ID INTEGER UNIQUE NOT NULL,
     FONCTION_INDIVIDU VARCHAR(50),
     EXEC_ID INTEGER NOT NULL
 );
 
---Table STAFF
--- Verification si table STAFF existe
-SELECT * FROM dbc.tables where tablename='WRK_STAFF';
+-- Table WRK_STAFF
+-- Check if WRK_STAFF table exists
+SELECT * FROM dbc.tables WHERE tablename='WRK_STAFF';
 
--- Suppression de la table rpart si elle existe
+-- Drop WRK_STAFF table if it exists
 .IF ACTIVITYCOUNT=0 THEN .GOTO LABEL_SKIP_DELETE_STAFF;
 DROP TABLE WRK.WRK_STAFF;
 
--- Creation de la table STAFF
 .LABEL LABEL_SKIP_DELETE_STAFF
 
+-- Create WRK_STAFF table
 CREATE TABLE WRK.WRK_STAFF (
     PART_ID INTEGER,
-    INDIVIDU_ID INTEGER UNIQUE NOT NULL, 
+    INDIVIDU_ID INTEGER UNIQUE NOT NULL,
     FONCTION_INDIVIDU VARCHAR(50),
     WORK_STRT_DTTM TIMESTAMP(0) NOT NULL,
     WORK_END_DTTM TIMESTAMP(0),
     WORK_END_RESN VARCHAR(100),
-    EXEC_ID	INTEGER NOT NULL
+    EXEC_ID INTEGER NOT NULL
 );
-
 
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
