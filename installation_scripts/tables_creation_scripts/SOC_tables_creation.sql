@@ -31,7 +31,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_TRET' AND databasename='SOC';
 -- Creation of table O_TRET
 CREATE TABLE SOC.O_TRET(
     TRET_ID         BIGINT UNIQUE NOT NULL,
-    MEDC_ID         VARCHAR(255),
+    MEDC_ID         INTEGER,
     MEDC_QTY        SMALLINT,
     DOSG_DSC        VARCHAR(100) NOT NULL,
     CONS_ID         BIGINT NOT NULL,

@@ -1,6 +1,6 @@
 LOGON localhost/dbc,dbc;
 
--- Initialisation suivi TCH
+-- Initialization TCH.T_SUIVI_TRMT table 
 INSERT INTO TCH.T_SUIVI_TRMT(RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
 VALUES((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_medicament.sql', NOW(), 'Running');
 
@@ -12,7 +12,7 @@ ON COMMIT PRESERVE ROWS;
 
 INSERT INTO CURRENT_EXEC_ID(current_exec_id) SELECT MAX(EXEC_ID) FROM TCH.T_SUIVI_TRMT;
 
--- STG to work pour medicament
+-- STG to work for MEDICAMENT
 INSERT INTO WRK.WRK_MEDICAMENT (
     MEDC_ID,
     CD_MEDICAMENT,
@@ -23,7 +23,7 @@ INSERT INTO WRK.WRK_MEDICAMENT (
     EXEC_ID
 )
 SELECT
-    ROW_NUMBER() OVER (ORDER BY CD_MEDICAMENT) AS MEDC_ID,
+    ROW_NUMBER() OVER (ORDER BY CD_MEDICAMENT) AS MEDC_ID, 
     CD_MEDICAMENT,
     NOM_MEDICAMENT,
     CONDIT_MEDICAMENT,
@@ -41,7 +41,7 @@ FROM (
 ) sous_requête;
 
 
--- MAJ etat et date de fin du script dans suivi TCH
+-- Update TCH.T_SUIVI_TRMT with state and date 
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
 UPDATE TCH.T_SUIVI_TRMT
 SET EXEC_END_DTTM=NOW(), EXEC_STTS_CD='Success'
