@@ -10,7 +10,7 @@ SELECT * FROM dbc.tables WHERE tablename='R_ROOM' AND databasename='SOC';
 
 -- Creation of table R_ROOM
 CREATE TABLE SOC.R_ROOM(
-    ROOM_NUM        INTEGER UNIQUE NOT NULL,
+    ROOM_NUM        INTEGER NOT NULL,
     ROOM_NAME       VARCHAR(20) NOT NULL,
     FLOR_NUM        VARCHAR(10),
     BULD_NAME       VARCHAR(20),
@@ -30,7 +30,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_TRET' AND databasename='SOC';
 
 -- Creation of table O_TRET
 CREATE TABLE SOC.O_TRET(
-    TRET_ID         BIGINT UNIQUE NOT NULL,
+    TRET_ID         BIGINT NOT NULL,
     MEDC_ID         INTEGER,
     MEDC_QTY        SMALLINT,
     DOSG_DSC        VARCHAR(100) NOT NULL,
@@ -49,7 +49,7 @@ SELECT * FROM dbc.tables WHERE tablename='R_PART' AND databasename='SOC';
 
 -- Creation of table R_PART
 CREATE TABLE SOC.R_PART(
-    PART_ID BIGINT UNIQUE NOT NULL,
+    PART_ID BIGINT NOT NULL,
     SRC_ID INTEGER NOT NULL,
     SRC_TYP VARCHAR(50) NOT NULL
 ) PRIMARY INDEX(PART_ID);
@@ -64,7 +64,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_STFF' AND databasename='SOC';
 
 -- Creation of table O_STFF
 CREATE TABLE SOC.O_STFF(
-    PART_ID         BIGINT UNIQUE NOT NULL,
+    PART_ID         BIGINT NOT NULL,
     WORK_STRT_DTTM  TIMESTAMP(0) NOT NULL,
     WORK_END_DTTM   TIMESTAMP(0),
     WORK_END_RESN   VARCHAR(100),
@@ -81,7 +81,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_INDV' AND databasename='SOC';
 
 -- Creation of table O_INDV
 CREATE TABLE SOC.O_INDV(
-    PART_ID         BIGINT UNIQUE NOT NULL,
+    PART_ID         BIGINT NOT NULL,
     INDV_NAME       VARCHAR(100) NOT NULL,
     INDV_FIRS_NAME  VARCHAR(100) NOT NULL,
     INDV_STTS_CD    VARCHAR(10) NOT NULL,
@@ -123,7 +123,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_ADDR' AND databasename='SOC';
 
 -- Creation of table O_ADDR
 CREATE TABLE SOC.O_ADDR(
-    PART_ID         BIGINT UNIQUE NOT NULL,
+    PART_ID         BIGINT NOT NULL,
     STRT_NUM        VARCHAR(10) NOT NULL,
     STRT_DSC        VARCHAR(250) NOT NULL,
     COMP_STRT       VARCHAR(250),
@@ -146,7 +146,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_CONS' AND databasename='SOC';
 
 -- Creation of table O_CONS
 CREATE TABLE SOC.O_CONS(
-    CONS_ID         BIGINT UNIQUE NOT NULL,
+    CONS_ID         BIGINT NOT NULL,
     STFF_ID         INTEGER NOT NULL,
     PATN_ID         INTEGER NOT NULL,
     CONS_STRT_DTTM  TIMESTAMP(0) NOT NULL,
@@ -172,7 +172,7 @@ SELECT * FROM dbc.tables WHERE tablename='O_HOSP' AND databasename='SOC';
 
 -- Creation of table O_HOSP
 CREATE TABLE SOC.O_HOSP(
-    HOSP_ID         BIGINT UNIQUE NOT NULL,
+    HOSP_ID         BIGINT NOT NULL,
     CONS_ID         BIGINT NOT NULL,
     ROOM_NUM        SMALLINT NOT NULL,
     HOSP_STRT_DTTM  TIMESTAMP(0) NOT NULL,
@@ -192,7 +192,7 @@ SELECT * FROM dbc.tables WHERE tablename='R_MEDC' AND databasename='SOC';
 
 -- Creation of table R_MEDC
 CREATE TABLE SOC.R_MEDC(
-    MEDC_ID         INTEGER UNIQUE NOT NULL,
+    MEDC_ID         INTEGER NOT NULL,
     MEDC_CD         VARCHAR(10) NOT NULL,
     MEDC_NAME       VARCHAR(250),
     MEDC_COND       VARCHAR(100),
