@@ -3,7 +3,7 @@
 -- Check that the db exists
 SELECT * FROM DBC.Databases WHERE DatabaseName = 'WRK';
 
--- Si la base n'existe pas, la creer
+-- Check that the db exists
 .IF ACTIVITYCOUNT>0 THEN .GOTO LABEL_SKIP_CREATE_DATABASE;
 
 -- Creation of the WRK DB 
