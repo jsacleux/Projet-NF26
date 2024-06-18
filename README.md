@@ -10,6 +10,25 @@ Le groupe est constitué de Juliette Sacleux, Nesrine Serradj, Eliott Sebbagh, L
 
 [Suivi de projet Jira](https://nf26groupe2.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog)
 
+
+## Guide d'éxécution
+
+Cloner le repository dans un dossier Desktop/NF26.
+
+### Installation du SID 
+
+Pour créer les bases de données et les tables, éxécuter le fichier install_SID.sh situé dans le dossier installation_scripts.
+
+### Ingestion des données 
+
+Pour alimenter la base de données STG, éxécuter le fichier LAUNCH_LOAD_SID.sh situé dans le dossier alimentation_scripts/INPUT_TO_STG, qui prend en argument le nom du fichier contenant les données à ingérer (de la forme BDD_HOSPITAL_{AnnéeMoisJour}).
+
+###  Alimentation du datawarehouse
+
+Pour alimenter la base de données WRK, éxécuter le fichier insert_staging_to_work.sh situé dans le dossier alimentation_scripts/STG_TO_WORK. 
+
+Pour alimenter la base de données SOC, éxécuter le fichier insert_work_to_soc.sh situé dans le dossier alimentation_scripts/WORK_TO_SOC.
+
 ## To Do
 - [X] Mettre tous les commentaires soit en français soit en anglais (scripts sh notamment)
 - [X] Voir commentaire Miguel sur traitement.sql dans WORK (alimentation)
