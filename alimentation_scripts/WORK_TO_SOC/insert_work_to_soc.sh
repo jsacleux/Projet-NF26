@@ -44,7 +44,9 @@ EOF
     fi
 }
 
-# Exectute each SQL script for SOC tables alimentation
+echo "Execution de work to soc" > $LOGFILE
+
+# Execute each SQL script for SOC tables alimentation
 for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
     run_sql_script $script
 done

@@ -2,7 +2,7 @@ LOGON localhost/dbc,dbc;
 
 -- Initialization of TCH.T_SUIVI_TRMT table
 INSERT INTO TCH.T_SUIVI_TRMT (RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
-VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_staff.sql', NOW(), 'Running');
+VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_staff.sql', NOW(), 'ENC');
 
 -- Create a volatile table to store the current EXEC_ID
 CREATE VOLATILE TABLE CURRENT_EXEC_ID (
@@ -34,7 +34,7 @@ SELECT
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
 FROM STG.PERSONNEL;
 
--- Error handling and update TCH.T_SUIVI_TRMT with state and end date
+-- KO handling and update TCH.T_SUIVI_TRMT with state and end date
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
 
 UPDATE TCH.T_SUIVI_TRMT
@@ -44,9 +44,9 @@ WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
 .GOTO LABEL_UPDATE_SUCCESS;
 
 .LABEL LABEL_UPDATE_WITH_ERROR
--- Error occurred, update status to 'Error'
+-- Error occurred, update status to 'KO'
 UPDATE TCH.T_SUIVI_TRMT
-SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'Error'
+SET EXEC_END_DTTM = NOW(), EXEC_STTS_CD = 'KO'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
 
 .QUIT 100;  -- Quit with exit code 100 on error

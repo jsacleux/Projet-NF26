@@ -6,18 +6,26 @@ BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Scripts for work tables alimentation
 SCRIPTS_STG_TO_WRK=(
+     # recreate work tables to work with empty tables
     "/root/Desktop/NF26/projet-nf26-groupe2/installation_scripts/tables_creation_scripts/WRK_tables_creation.sql"
+    # start "suivi tch" for the run
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/init_suivi_tch.sql"
+
+    # Run stg to work for rpart and medicament first as they might be needed for other tables
+    "stg_to_work_rpart.sql"
+    "stg_to_work_medicament.sql"
+
+    # Run stg to work for other tables
     "stg_to_work_adresse.sql"
     "stg_to_work_chambre.sql"
     "stg_to_work_consultation.sql"
     "stg_to_work_hospitalisation.sql"
     "stg_to_work_individu.sql"
-    "stg_to_work_medicament.sql"
-    "stg_to_work_rpart.sql"
     "stg_to_work_staff.sql"
     "stg_to_work_telephone.sql"
     "stg_to_work_traitement.sql"
+
+    # end "suivi tch" for the run
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
 )
 
@@ -41,6 +49,8 @@ EOF
         exit 1
     fi
 }
+
+echo "Execution de stg to work" > $LOGFILE
 
 # Execute each SQL script
 for script in "${SCRIPTS_STG_TO_WRK[@]}"; do

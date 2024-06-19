@@ -2,7 +2,7 @@
 
 -- Initialize tracking for TCH
 INSERT INTO TCH.T_SUIVI_TRMT (RUN_ID, SCRPT_NAME, EXEC_STRT_DTTM, EXEC_STTS_CD)
-VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_chambre.sql', NOW(), 'Running');
+VALUES ((SELECT MAX(RUN_ID) FROM TCH.T_SUIVI_RUN), 'stg_to_work_chambre.sql', NOW(), 'ENC');
 
 -- Create a volatile table to store current EXEC_ID
 CREATE VOLATILE TABLE CURRENT_EXEC_ID (
@@ -47,7 +47,7 @@ WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
 .LABEL LABEL_UPDATE_WITH_ERROR
 UPDATE TCH.T_SUIVI_TRMT
 SET EXEC_END_DTTM = NOW(),
-    EXEC_STTS_CD = 'Error'
+    EXEC_STTS_CD = 'KO'
 WHERE EXEC_ID = (SELECT current_exec_id FROM CURRENT_EXEC_ID);
 .QUIT 100;
 
