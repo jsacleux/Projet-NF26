@@ -40,7 +40,7 @@ SELECT
     (SELECT current_exec_id FROM CURRENT_EXEC_ID) AS current_exec_id
 FROM STG.TRAITEMENT TRET;
 
--- KO handling and update TCH.T_SUIVI_TRMT with state and end date
+-- Error handling and update TCH.T_SUIVI_TRMT with state and end date
 .IF ERRORCODE <> 0 THEN .GOTO LABEL_UPDATE_WITH_ERROR;
 
 UPDATE TCH.T_SUIVI_TRMT
