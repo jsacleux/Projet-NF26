@@ -3,27 +3,27 @@
 # Variables
 LOGFILE="LAUNCH_LOAD_SID.log"
 DATA_HOSPITAL_DIR="/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital"
-DOSSIER_LOAD="load_scripts"
+DOSSIER_LOAD_STG="INPUT_TO_STG\load_scripts"
 
 # Check number of arguments
 if ! [ $# -eq 1 ]; then
-		echo "- $0 : argument manquant"
-		echo "  usage : ./LAUCH_LOAD_SID.sh BDD_directory"
-		exit
-fi;
+    echo "- $0 : argument missing"
+    echo "  usage : ./LAUNCH_LOAD_SID.sh BDD_directory"
+    exit 1
+fi
 
 # First argument : folder containing data for a day
 BDD_HOSPITAL_DIR=$1
 
 if ! [ -d "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR" ]; then
-		echo "- $0 : dossier inexistant ($DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR)"
-		exit
-fi;
+    echo "- $0 : directory does not exist ($DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR)"
+    exit 1
+fi
 
 # Function to extract date from directory name
 extract_date_from_directory() {
     dirname="$1"
-    DATE="${BDD_HOSPITAL_DIR: -8}"
+    DATE="${dirname: -8}"
     echo $DATE
 }
 
@@ -49,7 +49,7 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
         TABLE=$(basename "$file" | cut -d '_' -f 1)
 
         # Define the TPT script path
-        TPT_SCRIPT="$DOSSIER_LOAD/load_${TABLE}.tpt"
+        TPT_SCRIPT="$DOSSIER_LOAD_STG/load_${TABLE}.tpt"
 
         # Execute TPT script with dynamically set variables
         echo "Executing TPT script for table $TABLE with date $DATE" >> $LOGFILE
@@ -57,11 +57,27 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
 
         tbuild -f "$TPT_SCRIPT" -u DATE="'$DATE'" -j "load_${TABLE}"
 
-
         # Log the TPT script execution
         echo "Executed TPT script: $TPT_SCRIPT" >> $LOGFILE
     done
 done
 
+echo "Executing STG_TO_WORK\insert_staging_to_work.sh" >> $LOGFILE
+STG_TO_WORK\insert_staging_to_work.sh 
+
+echo "Executing WORK_TO_SOC\insert_work_to_soc.sh" >> $LOGFILE
+WORK_TO_SOC\insert_work_to_soc.sh 
+
 # End of log file
 echo "End of installation: $(date)" >> $LOGFILE
+
+# Ask if another day should be processed
+read -p "Do you want to process another day? (yes/no): " choice
+if [ "$choice" == "yes" ]; then
+    read -p "Enter the directory for the chosen day: " new_directory
+    ./LAUNCH_LOAD_SID.sh "$new_directory"
+else
+    echo "Finished."
+    exit 0
+fi
+
