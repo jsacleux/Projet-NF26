@@ -62,7 +62,6 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
     done
 done
 
-# Execute additional scripts
 echo "Executing STG_TO_WORK\insert_staging_to_work.sh" >> $LOGFILE
 STG_TO_WORK\insert_staging_to_work.sh 
 
