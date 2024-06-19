@@ -73,13 +73,12 @@ WORK_TO_SOC\insert_work_to_soc.sh
 echo "End of installation: $(date)" >> $LOGFILE
 
 # Ask if another day should be processed
-while true; do
-    read -p "Do you want to process another day? (yes/no): " choice
-    if [ "$choice" == "yes" ]; then
-        read -p "Enter the directory for the chosen day: " new_directory
-        ./LAUNCH_LOAD_SID.sh "$new_directory"
-    else
-        echo "Finished."
-        exit 0
-    fi
-done
+read -p "Do you want to process another day? (yes/no): " choice
+if [ "$choice" == "yes" ]; then
+    read -p "Enter the directory for the chosen day: " new_directory
+    ./LAUNCH_LOAD_SID.sh "$new_directory"
+else
+    echo "Finished."
+    exit 0
+fi
+
