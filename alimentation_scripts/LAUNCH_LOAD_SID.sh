@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="LAUNCH_LOAD_SID.log"
+LOGFILE="LOG/LAUNCH_LOAD_SID.log"
 DATA_HOSPITAL_DIR="/root/Desktop/NF26/projet-nf26-groupe2/Data_Hospital"
-DOSSIER_LOAD_STG="INPUT_TO_STG\load_scripts"
+DOSSIER_LOAD_STG="INPUT_TO_STG/load_scripts"
 
 # Check number of arguments
 if ! [ $# -eq 1 ]; then
@@ -62,11 +62,11 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
     done
 done
 
-echo "Executing STG_TO_WORK\insert_staging_to_work.sh" >> $LOGFILE
-STG_TO_WORK\insert_staging_to_work.sh 
+echo "Executing STG_TO_WORK/insert_staging_to_work.sh" >> $LOGFILE
+STG_TO_WORK/insert_staging_to_work.sh 
 
-echo "Executing WORK_TO_SOC\insert_work_to_soc.sh" >> $LOGFILE
-WORK_TO_SOC\insert_work_to_soc.sh 
+echo "Executing WORK_TO_SOC/insert_work_to_soc.sh" >> $LOGFILE
+WORK_TO_SOC/insert_work_to_soc.sh 
 
 # End of log file
 echo "End of installation: $(date)" >> $LOGFILE

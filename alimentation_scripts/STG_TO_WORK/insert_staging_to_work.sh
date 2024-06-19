@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="insert_staging_to_work.log"
+LOGFILE="LOG/insert_staging_to_work.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Scripts for work tables alimentation
@@ -12,18 +12,18 @@ SCRIPTS_STG_TO_WRK=(
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/init_suivi_tch.sql"
 
     # Run stg to work for rpart and medicament first as they might be needed for other tables
-    "stg_to_work_rpart.sql"
-    "stg_to_work_medicament.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_rpart.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_medicament.sql"
 
     # Run stg to work for other tables
-    "stg_to_work_adresse.sql"
-    "stg_to_work_chambre.sql"
-    "stg_to_work_consultation.sql"
-    "stg_to_work_hospitalisation.sql"
-    "stg_to_work_individu.sql"
-    "stg_to_work_staff.sql"
-    "stg_to_work_telephone.sql"
-    "stg_to_work_traitement.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_adresse.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_chambre.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_consultation.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_hospitalisation.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_individu.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_staff.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_telephone.sql"
+    "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/STG_TO_WORK/stg_to_work_traitement.sql"
 
     # end "suivi tch" for the run
     "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
