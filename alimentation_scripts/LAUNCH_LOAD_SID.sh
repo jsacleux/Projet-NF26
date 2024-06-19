@@ -63,10 +63,10 @@ for subdir in "$DATA_HOSPITAL_DIR/$BDD_HOSPITAL_DIR"; do
 done
 
 # Execute additional scripts
-echo "Executing STG_TO_WORK\\insert_staging_to_work.sh" >> $LOGFILE
+echo "Executing STG_TO_WORK\insert_staging_to_work.sh" >> $LOGFILE
 STG_TO_WORK\insert_staging_to_work.sh 
 
-echo "Executing WORK_TO_SOC\\insert_work_to_soc.sh" >> $LOGFILE
+echo "Executing WORK_TO_SOC\insert_work_to_soc.sh" >> $LOGFILE
 WORK_TO_SOC\insert_work_to_soc.sh 
 
 # End of log file
