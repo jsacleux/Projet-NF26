@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="LOG/install_SID.log"
+dt=$(date '+%d_%m_%Y_%H_%M_%S');
+LOGFILE="LOG/install_SID_${dt}.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Folders containing the SQL scripts for db and tables creation

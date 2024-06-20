@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="LOG/insert_work_to_soc.log"
+dt=$(date '+%d_%m_%Y_%H_%M_%S');
+LOGFILE="LOG/insert_work_to_soc_${dt}.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Scripts for SOC tables alimentation

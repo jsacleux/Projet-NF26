@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="LOG/insert_staging_to_work.log"
+dt=$(date '+%d_%m_%Y_%H_%M_%S');
+LOGFILE="LOG/insert_staging_to_work_${dt}.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Scripts for work tables alimentation
