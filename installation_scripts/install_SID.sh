@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-LOGFILE="install_SID.log"
+LOGFILE="LOG/install_SID.log"
 BTEQ="/opt/teradata/client/17.00/bin/bteq"
 
 # Folders containing the SQL scripts for db and tables creation
@@ -23,7 +23,7 @@ SCRIPTS_TABLES_CREATION=(
 )
 
 # Logging start of installation
-echo "Début de l'installation: $(date)" > $LOGFILE
+echo "Installation of databases and tables started at $(date)" > $LOGFILE
 
 # Function that executes an SQL script with BTEQ
 run_sql_script() {
@@ -37,7 +37,7 @@ run_sql_script() {
 EOF
 
     if [ $? -ne 0 ]; then
-        echo "Erreur lors de l'exécution de $script. Consultez le fichier de log pour plus de détails." >> $LOGFILE
+        echo "Error while processing $script. Please read the log file for more details." >> $LOGFILE
         exit 1
     fi
 }
@@ -53,5 +53,5 @@ for script in "${SCRIPTS_TABLES_CREATION[@]}"; do
 done
 
 # End of installation
-echo "Installation terminée avec succès: $(date)" >> $LOGFILE
+echo "Installation ended with success at $(date)" >> $LOGFILE
 exit 0

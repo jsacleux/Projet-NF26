@@ -45,12 +45,12 @@ EOF
             echo "Lancement du script de suivi tch avant de sortir à cause de l'erreur." >> $LOGFILE
             run_sql_script "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
         fi
-        echo "Erreur lors de l'exécution de $script. Consultez le fichier de log pour plus de détails." >> $LOGFILE
+        echo "Error while processing $script. Please read the log file for more details." >> $LOGFILE
         exit 1
     fi
 }
 
-echo "Execution de stg to work" > $LOGFILE
+echo "Execution de stg to work started at $(date)" > $LOGFILE
 
 # Execute each SQL script
 for script in "${SCRIPTS_STG_TO_WRK[@]}"; do
@@ -58,5 +58,5 @@ for script in "${SCRIPTS_STG_TO_WRK[@]}"; do
 done
 
 # End of installation
-echo "Installation terminée avec succès: $(date)" >> $LOGFILE
+echo "Stg to Work ended with success: $(date)" >> $LOGFILE
 exit 0

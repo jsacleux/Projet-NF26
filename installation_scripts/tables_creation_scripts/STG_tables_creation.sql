@@ -167,7 +167,7 @@ CREATE TABLE STG.MEDICAMENT (
     MARQUE_FABRI VARCHAR(100) NOT NULL
 );
 
-
+-- Check for error and quit the program
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
 .LOGOFF;

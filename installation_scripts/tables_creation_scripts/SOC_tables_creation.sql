@@ -203,7 +203,7 @@ CREATE TABLE SOC.R_MEDC(
 
 .LABEL LABEL_SKIP_CREATE_R_MEDC
 
--- Closure
+-- Check for error and quit the program
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
 .LOGOFF;

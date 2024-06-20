@@ -233,6 +233,7 @@ CREATE TABLE WRK.WRK_STAFF (
     EXEC_ID INTEGER NOT NULL
 );
 
+-- Check for error and quit the program
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
 .LOGOFF;

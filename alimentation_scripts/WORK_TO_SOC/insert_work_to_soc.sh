@@ -23,7 +23,7 @@ SCRIPTS_DB_COMPLETION=(
 # Function that executes an SQL script with BTEQ
 run_sql_script() {
     local script=$1
-    echo "Exécution de $script..." >> $LOGFILE
+    echo "Executing $script..." >> $LOGFILE
     $BTEQ <<EOF >> $LOGFILE 2>&1
 
 .RUN FILE=$script;
@@ -36,15 +36,15 @@ EOF
 
     if [ $? -ne 0 ]; then
         if [ "$scrit" != "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql" ]; then
-            echo "Lancement du script de suivi tch avant de sortir à cause de l'erreur." >> $LOGFILE
+            echo "Launching script 'suivi tch' before exiting because of error in script $script." >> $LOGFILE
             run_sql_script "/root/Desktop/NF26/projet-nf26-groupe2/alimentation_scripts/SUIVI_TCH/end_suivi_tch.sql"
         fi
-        echo "Erreur lors de l'exécution de $script. Consultez le fichier de log pour plus de détails." >> $LOGFILE
+        echo "Error while processing $script. Please read the log file for more details." >> $LOGFILE
         exit 1
     fi
 }
 
-echo "Execution de work to soc" > $LOGFILE
+echo "Execution de work to soc started at $(date)" > $LOGFILE
 
 # Execute each SQL script for SOC tables alimentation
 for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
@@ -52,5 +52,5 @@ for script in "${SCRIPTS_DB_COMPLETION[@]}"; do
 done
 
 # End of installation
-echo "Installation terminée avec succès: $(date)" >> $LOGFILE
+echo "Work to SOC ended with success: $(date)" >> $LOGFILE
 exit 0

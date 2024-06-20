@@ -36,7 +36,7 @@ CREATE TABLE TCH.T_SUIVI_TRMT (
 
 .LABEL LABEL_SKIP_CREATE_T_SUIVI_TRMT
 
--- Termination
+-- Check for error and quit the program
 .IF ERRORCODE <> 0 THEN .QUIT 100;
 
 .LOGOFF;
