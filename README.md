@@ -28,19 +28,26 @@ Pour créer les bases de données et les tables, exécuter le fichier `install_S
 
 ### Ingestion des données
 
-Pour alimenter la base de données STG, exécuter le fichier `LAUNCH_LOAD_SID.sh` situé dans le dossier `alimentation_scripts/INPUT_TO_STG`, qui prend en argument le nom du dossier contenant les données à ingérer (de la forme `BDD_HOSPITAL_{YYYYMMDD}`). Ce script lancera également `insert_staging_to_work.sh` et `insert_work_to_soc.sh`, pour insérer les données de STG dans WORK, puis de WORK dans SOC. Enfin, il proposera à l'utilisateur de saisir un nouveau nom de dossier à ingérer (pour traiter un autre jour).
+Pour alimenter la base de données STG, exécuter le fichier `insert_input_staging_to_work.sh` situé dans le dossier `alimentation_scripts/INPUT_TO_STG`, qui prend en argument le nom du dossier contenant les données à ingérer (de la forme `BDD_HOSPITAL_{YYYYMMDD}`).
 
 ### Alimentation du datawarehouse
-
-Les deux scripts ci-dessous sont utilisés par `LAUNCH_LOAD_SID.sh`. On peut cependant vouloir les lancer à la main pour des raisons de débogage.
 
 Pour alimenter la base de données WRK, exécuter le fichier `insert_staging_to_work.sh` situé dans le dossier `alimentation_scripts/STG_TO_WORK`.
 
 Pour alimenter la base de données SOC, exécuter le fichier `insert_work_to_soc.sh` situé dans le dossier `alimentation_scripts/WORK_TO_SOC`.
 
+### Execution de toute la chaine INPUT -> STG -> WORK -> SOC
+
+Afin de faire en une fois l'insertion des données d'une journée dans les tables STG, puis WORK, puis SOC,l'utilisateur peut se servir de `LAUNCH_LOAD_SID.sh`, présent dans le dossier. On laisse le choix à l'utilisateur d'effectuer chaque étape séparément (pour des raisons de débogage notamment) ou d'exécuter la chaîne en une fois avec `LAUNCH_LOAD_SID.sh`. Une fois l'insertion effectuée pour une journée, ce script proposera à l'utilisateur de saisir un nouveau nom de dossier à ingérer (pour traiter un autre jour).
+
+Exemple d'utilisation depuis le dossier `alimentation_scripts/`: `./LAUNCH_LOAD_SID.sh BDD_HOSPITAL_20240429`
+Puis l'utilisateur saisit `yes` pour saisir un autre jour puis `BDD_HOSPITAL_20240430` pour traiter les données du jour suivant. L'utilisateur peut alors continuer avec d'autres jour, et saisir `no` pour arrêter.
+
+Tous les fichiers de LOG seront présents à l'issu de l'exécution dans le dossier `alimentation_scripts/LOG/` (un fichier par script sh pour chaque jour, donc 4 fichiers log par jour).
+
 ### Fichiers de log
 
-Dans les répertoires contenant des scripts `.sh`, des fichiers de log du même nom que les fichiers `.sh` avec l'extension `.log` sont disponibles. Ils retracent le déroulement de chaque exécution.
+Dans les répertoires contenant des scripts `.sh`, on trouve un repertoire LOG. Celui-ci contient des fichiers de log du même nom que les fichiers `.sh` auquel on concatène la date avec l'extension `.log` (par exemple install_SID_YYYY_MM_DD_HH_MM_SS.log) sont disponibles. Ils retracent le déroulement de chaque exécution.
 
 ## Documentation de Terradata
 
